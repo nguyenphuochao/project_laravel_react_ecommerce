@@ -27,4 +27,10 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    // cấu hình lun trả về json thay vì hiện mã HTML
+    protected function shouldReturnJson($request, Throwable $e)
+    {
+        return true;
+    }
 }
