@@ -1,12 +1,12 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 
 export default function Sidebar() {
     return (
         <>
             <ul className="sidebar navbar-nav">
                 <li className="nav-item active">
-                    <Link className="nav-link" to="/admin"><i className="fas fa-fw fa-tachometer-alt" /> <span>Tổng quan</span></Link>
+                    <NavLink className="nav-link" to="/admin"><i className="fas fa-fw fa-tachometer-alt" /> <span>Tổng quan</span></NavLink>
                 </li>
                 <li className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id><i className="fas fa-shopping-cart" /> <span>Đơn hàng</span></a>
@@ -18,8 +18,8 @@ export default function Sidebar() {
                 <li className="nav-item dropdown">
                     <Link className="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id><i className="fab fa-product-hunt" /> <span>Sản phẩm</span></Link>
                     <div className="dropdown-menu" aria-labelledby>
-                        <Link className="dropdown-item" to="/admin/product/list">Danh sách</Link>
-                        <Link className="dropdown-item" to="/admin/product/add">Thêm</Link>
+                        <NavLink className="dropdown-item" to="/admin/product/list">Danh sách</NavLink>
+                        <NavLink className="dropdown-item" to="/admin/product/add">Thêm</NavLink>
                     </div>
                 </li>
                 <li className="nav-item dropdown">
@@ -42,8 +42,8 @@ export default function Sidebar() {
                     </div>
                 </li>
                 <li className="nav-item dropdown">
-                    <a className="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id><i className="fas fa-folder" /> <span>Danh mục</span></a>
-                    <div className="dropdown-menu" aria-labelledby>
+                    <Link className="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id><i className="fas fa-folder" /> <span>Danh mục</span></Link>
+                    <div className="dropdown-menu">
                         <Link className="dropdown-item" to="/admin/category/list">Danh sách</Link>
                         <Link className="dropdown-item" to="/admin/category/add">Thêm</Link>
                     </div>

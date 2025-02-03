@@ -1,10 +1,9 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import Loading from '../../component/Loading';
 import { toast } from 'react-toastify';
 import Pagination from '../../component/Pagination';
-import { updateParam } from '../../helper/util';
+import { axiosAuthInstance, updateParam } from '../../helper/util';
 import Search from '../../component/Search';
 import ShowQty from '../../component/ShowQty';
 
@@ -12,7 +11,7 @@ export default function CategoryList() {
     const [categories, setCategories] = useState([]);
     const [pagination, setPagination] = useState({ page: 1, totalPage: 0 });
     const [totalItem, setTotalItem] = useState(0);
-    const [isChecked, setIsChecked] = useState(false);
+    const [checkBoxItem, setCheckBoxItem] = useState([]);
 
     const [searchParams, setSearchParams] = useSearchParams(); // trạng thái lưu searchParams
     const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
@@ -24,7 +23,7 @@ export default function CategoryList() {
     // Lấy danh sách danh mục
     const getCategories = async () => {
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/v1/categories?page=${page}&search=${search}&perPage=${perPage}`);
+            const response = await axiosAuthInstance().get(`/categories?page=${page}&search=${search}&perPage=${perPage}`);
             setCategories(response.data.items);
             setPagination(response.data.pagination);
             setTotalItem(response.data.totalItem);
@@ -72,20 +71,44 @@ export default function CategoryList() {
     const showQtyItem = (e) => {
         const perPage = e.target.value;
         setPerPage(perPage);
+        setPage(1);
         const newParams = { page: 1, perPage: perPage };
         updateParam(searchParams, setSearchParams, newParams);
     }
 
-    // hàm checkbox tất cả
-    const handleCheckBox = () => {
-        setIsChecked(true)
+    // chọn những cái checkbox
+    const handleCheckBox = (e, id) => {
+        if (e.target.checked) {
+            setCheckBoxItem([...checkBoxItem, id]); // push tất cả id checked vào state
+        } else {
+            setCheckBoxItem(checkBoxItem.filter(item => item !== id)); // Loại bỏ ID khỏi danh sách
+        }
     }
+
+    // hàm xóa nhiều items
+    const handleDeleteAll = async (e) => {
+        e.preventDefault();
+        if (checkBoxItem.length === 0) {
+            toast.error('Bạn chưa chọn');
+            return;
+        }
+
+        try {
+            await axiosAuthInstance().post('/categories/deleteAll', { ids: checkBoxItem });
+            setCheckBoxItem([]);
+            toast.success('Đã xóa tất cả danh mục');
+        } catch (error) {
+            toast.error(error.response.data.message);
+            console.log(error);
+        }
+    }
+
 
     // hàm xóa danh mục theo id
     const handleDelete = async (id) => {
         try {
             if (window.confirm('Bạn chắc xóa chứ?')) {
-                await axios.delete(`http://127.0.0.1:8000/api/v1/categories/${id}}`);
+                await axiosAuthInstance().delete(`/categories/${id}}`);
                 toast.success(`Đã xóa danh mục`);
                 getCategories();
             }
@@ -100,7 +123,6 @@ export default function CategoryList() {
         getCategories()
         // eslint-disable-next-line
     }, [page, search, perPage])
-
 
     return (
         <>
@@ -117,7 +139,7 @@ export default function CategoryList() {
                     {/* Link action */}
                     <div className="action-bar">
                         <Link to="/admin/category/add" className="btn btn-primary btn-sm mr-2">Thêm</Link>
-                        <Link to="/admin/category/add" className="btn btn-danger btn-sm">Xóa</Link>
+                        <Link onClick={(e) => handleDeleteAll(e)} to="#" className="btn btn-danger btn-sm">Xóa</Link>
                     </div>
 
                     {/* action show and search data */}
@@ -133,7 +155,7 @@ export default function CategoryList() {
                                 <table className="table table-hover" width="100%" cellSpacing={0}>
                                     <thead>
                                         <tr>
-                                            <th><input type="checkbox" onChange={() => handleCheckBox()} /></th>
+                                            <th><input type="checkbox" /></th>
                                             <th>Tên</th>
                                             <th></th>
                                             <th></th>
@@ -144,7 +166,7 @@ export default function CategoryList() {
                                             !isLoaded ? <Loading /> :
                                                 categories.map((category, index) =>
                                                     <tr key={index}>
-                                                        <td><input type="checkbox" /></td>
+                                                        <td><input type="checkbox" onChange={(e) => handleCheckBox(e, category.id)} /></td>
                                                         <td>{category.name}</td>
                                                         <td><Link className="btn btn-warning btn-sm" to={`/admin/category/edit/${category.id}`}>Sửa</Link></td>
                                                         <td><Link onClick={() => handleDelete(category.id)} className="btn btn-danger btn-sm" to="#">Xóa</Link></td>

@@ -15,7 +15,6 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        // sleep(5);
         $query = Category::query()->orderBy('id', "DESC");
 
         $search = $request->input('search');
@@ -109,6 +108,27 @@ class CategoryController extends Controller
 
             return response()->json([
                 "message" => "Không tìm thấy danh mục có id=" . $id,
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function deleteAll(Request $request)
+    {
+        try {
+            $ids = $request->input('ids');
+            foreach ($ids as $id) {
+                $category = Category::find($id);
+                $category->delete();
+            }
+        } catch (\Throwable $th) {
+            if ($th->getCode() == 23000) {
+                return response()->json([
+                    "message" => "Danh mục chứa sản phẩm, không thể xóa",
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+            return response()->json([
+                "message" => "Không tìm thấy danh mục",
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

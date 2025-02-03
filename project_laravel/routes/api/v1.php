@@ -22,5 +22,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Categories
 Route::apiResource('categories', CategoryController::class);
+Route::post('categories/deleteAll', [CategoryController::class, 'deleteAll']);
 // Products
 Route::apiResource('products', ProductController::class);

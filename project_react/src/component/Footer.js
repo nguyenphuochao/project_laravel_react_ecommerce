@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 export default function Footer() {
     return (
@@ -23,7 +24,7 @@ export default function Footer() {
                         </div>
                         <div className="modal-footer">
                             <button className="btn btn-secondary" type="button" data-dismiss="modal">Hủy</button>
-                            <a className="btn btn-primary" href="login.html">Thoát</a>
+                            <Link className="btn btn-primary" to="/login">Thoát</Link>
                         </div>
                     </div>
                 </div>

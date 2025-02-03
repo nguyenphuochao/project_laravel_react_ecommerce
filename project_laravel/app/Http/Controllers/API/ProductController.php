@@ -14,6 +14,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
+        //  query join product vs category
         $query = Product::query()->join("category", "category.id", "=", "product.category_id")
             ->select(
                 [
@@ -32,27 +33,39 @@ class ProductController extends Controller
                 ]
             )->orderBy('product.id', "DESC");
 
+        // search product barcode
         $search_product_barcode = $request->input('search_product_barcode');
         if ($search_product_barcode) {
             $query->where('product.barcode', '=', $search_product_barcode);
         }
 
+        // search product name
         $search_product_name = $request->input('search_product_name');
         if ($search_product_name) {
             $query->where('product.name', 'like', '%' . $search_product_name . '%');
         }
 
+        // search category name
         $search_category_name = $request->input('search_category_name');
         if ($search_category_name) {
             $query->where("category.name", "like", '%' . $search_category_name . '%');
         }
 
-        $search_product_created_date = $request->input('search_product_created_date');
-        if ($search_product_created_date) {
-            $query->where('created_date', '>=', $search_product_created_date);
+        $search_product_created_date_from = $request->input('search_product_created_date_from');
+        $search_product_created_date_to = $request->input('search_product_created_date_to');
+
+        // search product created date from
+        if ($search_product_created_date_from) {
+            $search_product_created_date_from = date("Y-m-d", strtotime($search_product_created_date_from));
+            $query->where('created_date', '>=', $search_product_created_date_from);
+        }
+        // seach product created date to
+        if ($search_product_created_date_to) {
+            $search_product_created_date_to = date("Y-m-d", strtotime($search_product_created_date_to . '+1 day'));
+            $query->where('created_date', '<=', $search_product_created_date_to);
         }
 
-        $perPage = $request->input("perPage", 5);
+        $perPage = $request->input("per_page", 5);
         $page = $request->input('page', 1);
         $totalItem = $query->count();
         $totalPage = ceil($totalItem / $perPage);

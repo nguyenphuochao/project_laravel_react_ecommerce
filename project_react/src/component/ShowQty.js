@@ -12,6 +12,7 @@ export default function ShowQty({perPage, showQtyItem}) {
                     <option selected={`${perPage === 15 ? "selected" : ""}`} value="15">15</option>
                     <option selected={`${perPage === 20 ? "selected" : ""}`} value="15">20</option>
                     <option selected={`${perPage === 25 ? "selected" : ""}`} value="15">25</option>
+                    <option selected={`${perPage === 30 ? "selected" : ""}`} value="15">30</option>
                 </select>
 
                 <label>mục</label>

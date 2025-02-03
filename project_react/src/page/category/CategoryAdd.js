@@ -1,9 +1,9 @@
-import axios from 'axios';
 import { useFormik } from 'formik';
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
+import { axiosAuthInstance } from '../../helper/util';
 
 export default function CategoryAdd() {
     const navigate = useNavigate();
@@ -24,7 +24,7 @@ export default function CategoryAdd() {
         // Khi dữ liệu hợp lệ sẽ chạy code onSubmit
         onSubmit: async values => {
             try {
-                const response = await axios.post('http://127.0.0.1:8000/api/v1/categories', values);
+                const response = await axiosAuthInstance().post('/categories', values);
                 toast.success(`Đã thêm mới ${response.data.name}`);
                 navigate('/admin/category/list');
             } catch (error) {
