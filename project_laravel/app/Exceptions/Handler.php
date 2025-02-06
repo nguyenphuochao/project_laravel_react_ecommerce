@@ -33,4 +33,14 @@ class Handler extends ExceptionHandler
     {
         return true;
     }
+
+    // cấu hình hiển thị Unauthenticated
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof \Symfony\Component\Routing\Exception\RouteNotFoundException) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        return parent::render($request, $exception);
+    }
 }

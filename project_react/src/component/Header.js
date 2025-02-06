@@ -1,7 +1,11 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify'
 
 export default function Header() {
+    const loggedUser = useSelector(state => state.loggedUser);
+
     return (
         <>
             <nav className="navbar navbar-expand navbar-dark bg-dark static-top">
@@ -13,8 +17,8 @@ export default function Header() {
                 {/* Navbar */}
                 <ul className="navbar-nav ml-auto">
                     <li className="nav-item no-arrow text-white">
-                        <span>Chào Nguyễn Hữu Lộc</span> |
-                        <a className="text-white nounderline" href="#" data-toggle="modal" data-target="#logoutModal">Thoát</a>
+                        <span>Chào {loggedUser?.name}</span> |
+                        <Link className="text-white nounderline" to="#" data-toggle="modal" data-target="#logoutModal">Thoát</Link>
                     </li>
                 </ul>
             </nav>

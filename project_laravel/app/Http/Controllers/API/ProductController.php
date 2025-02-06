@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
@@ -88,7 +91,61 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // validate
+        $request->validate(
+            [
+                'barcode'           => 'required|digits:13|numeric|unique:product,barcode',
+                'sku'               => 'required',
+                'name'              => 'required|unique:product,name',
+                'price'             => 'required',
+                'inventory_qty'     => 'required',
+                'category_id'       => 'required',
+                'brand_id'          => 'required',
+                'featured_image'    => 'mimes:jpeg,jpg,png,gif|nullable',
+                'description'       => 'required'
+            ],
+            [
+                'barcode.required'          => 'Vui lòng nhập barcode',
+                'barcode.unique'            => 'Barcode đã tồn tại',
+                'barcode.digits'            => 'Barcode phải 13 chữ số',
+                'barcode.numeric'           => 'Barcode phải 13 chữ số',
+                'sku.required'              => 'Vui lòng nhập SKU',
+                'name.required'             => 'Vui lòng nhập tên sản phẩm',
+                'name.unique'               => 'Tên sản phẩm bị trùng',
+                'inventory_qty.required'    => 'Vui lòng nhập số lượng sản phẩm',
+                'category_id.required'      => 'Vui lòng chọn danh mục',
+                'brand_id'                  => 'Vui lòng chọn nhãn hiệu',
+                'featured_image.mimes'      => 'Vui lòng chọn định dạng jpeg,jpg,png,gif',
+                'description'               => 'Vui lòng nhập mô tả sản phẩm'
+            ]
+        );
+
+        $product = new Product();
+        $product->barcode = $request->barcode;
+        $product->sku = $request->sku;
+        $product->name = $request->name;
+        $product->price = $request->price;
+        $product->inventory_qty = $request->inventory_qty;
+        $product->category_id = $request->category_id;
+        $product->brand_id = $request->brand_id;
+        $product->featured = $request->featured;
+        $product->description = $request->description;
+        $product->discount_from_date = date('Y-m-d');
+        $product->discount_to_date = date('Y-m-d');
+        $product->discount_percentage = 0;
+        $product->created_date = date('Y-m-d H:i:s');
+        if ($request->hasFile('featured_image')) {
+            $baseUrl = request()->getSchemeAndHttpHost();
+            $file = $request->file('featured_image');
+            $path = public_path() . '/uploads';
+            $file_name = time() . '_' . $file->getClientOriginalName();
+            $file->move($path, $file_name);
+            $product->featured_image = $baseUrl . '/uploads/' . $file_name;
+        }
+
+        $product->save();
+
+        return response()->json($product);
     }
 
     /**
@@ -112,6 +169,19 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Product::destroy($id);
+        return response()->json([
+            "message" => "Đã xóa sản phẩm thành công"
+        ],  Response::HTTP_OK);
+    }
+
+    public function getCategories()
+    {
+        return Category::all();
+    }
+
+    public function getBrands()
+    {
+        return Brand::all();
     }
 }

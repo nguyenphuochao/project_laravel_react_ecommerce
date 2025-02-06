@@ -1,7 +1,7 @@
 import React from 'react'
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { axiosNonAuthInstance } from '../../helper/util';
@@ -33,8 +33,8 @@ export default function Login() {
                 const action = {
                     type: 'LOGIN_SUCCESS',
                     payload: {
-                        access_token: response.data.access_token,
-                        loggedUser: response.data.user
+                        access_token: response.data.token,
+                        loggedUser: response.data.staff
                     }
                 };
                 
@@ -42,7 +42,8 @@ export default function Login() {
                 navigate('/admin');
 
             } catch (error) {
-                toast.error(error.message);
+                toast.error(error.response.data.message);
+                // console.log(error);
             }
         }
     });
@@ -92,11 +93,12 @@ export default function Login() {
                                 </div>
                             </div>
 
-                            <buton style={{ cursor: "pointer" }} className="btn btn-primary btn-block" >Đăng nhập</buton>
+                            <button style={{ cursor: "pointer" }} className="btn btn-primary btn-block" >Đăng nhập</button>
 
                         </form>
                     </div>
                 </div>
+                <ToastContainer />
             </div>
         </>
     )

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ProductController;
 use Illuminate\Http\Request;
@@ -16,12 +17,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Login
+Route::post('login', [AuthController::class, 'login']);
+// Logout
+Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-// Categories
-Route::apiResource('categories', CategoryController::class);
-Route::post('categories/deleteAll', [CategoryController::class, 'deleteAll']);
-// Products
-Route::apiResource('products', ProductController::class);
+// Xác thực nhóm API token
+Route::middleware('auth:sanctum')->group(function () {
+    // get Staff
+    Route::get('staff', [AuthController::class, 'getStaff']);
+
+    // Categories
+    Route::apiResource('categories', CategoryController::class);
+    Route::post('categories/deleteAll', [CategoryController::class, 'deleteAll']);
+
+    // Products
+    Route::apiResource('products', ProductController::class);
+    Route::get('products/getCategories', [ProductController::class, 'getCategories']);
+    Route::get('products/getBrands', [ProductController::class, 'getBrands']);
+});

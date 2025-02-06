@@ -1,13 +1,14 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import Loading from '../../component/Loading';
-import { updateParam } from '../../helper/util';
+import { axiosAuthInstance, updateParam } from '../../helper/util';
 import SearchProductForm from '../../component/SearchProductForm';
 import ShowQty from '../../component/ShowQty';
 import Pagination from '../../component/Pagination';
+import { toast } from 'react-toastify';
 
 export default function ProductList() {
+    const navigate = useNavigate();
     const [products, setProducts] = useState([]);
     const [pagination, setPagination] = useState({ page: 1, totalPage: 0 });
     const [isLoaded, setIsLoaded] = useState(false);
@@ -24,7 +25,7 @@ export default function ProductList() {
     //  Lấy danh sách sản phẩm
     const getProducts = async () => {
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/v1/products?search_product_name=${searchProductName}&search_category_name=${searchCategoryName}&search_product_barcode=${searchProductBarcode}&search_product_created_date_from=${searchProductCreatedDateFrom}&search_product_created_date_to=${searchProductCreatedDateTo}&per_page=${perPage}&page=${page}`);
+            const response = await axiosAuthInstance().get(`/products?search_product_name=${searchProductName}&search_category_name=${searchCategoryName}&search_product_barcode=${searchProductBarcode}&search_product_created_date_from=${searchProductCreatedDateFrom}&search_product_created_date_to=${searchProductCreatedDateTo}&per_page=${perPage}&page=${page}`);
             setProducts(response.data.items);
             setPerPage(response.data.perPage)
             setPagination(response.data.pagination);
@@ -89,6 +90,25 @@ export default function ProductList() {
         updateParam(searchParams, setSearchParams, newParams);
     }
 
+    // Xóa sản phẩm theo id
+    const handleDelete = async (id) => {
+        try {
+            if (window.confirm('Bạn chắc xóa sản phẩm này?')) {
+                const response = await axiosAuthInstance().delete(`/products/${id}`);
+                toast.success(response.data.message);
+                getProducts();
+            }
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }
+
+    }
+
+    // Sửa sản phẩm theo id
+    const handleEdit = (id) => {
+        navigate(`/admin/product/edit/${id}`)
+    }
+
     useEffect(() => {
         getProducts()
         // eslint-disable-next-line
@@ -117,7 +137,7 @@ export default function ProductList() {
                     {/* Search Form */}
                     <SearchProductForm handleSearch={handleSearch} searchProductName={searchProductName}
                         searchCategoryName={searchCategoryName} searchProductBarcode={searchProductBarcode}
-                        searchProductCreatedDateFrom={searchProductCreatedDateFrom} searchProductCreatedDateTo={searchProductCreatedDateTo}/>
+                        searchProductCreatedDateFrom={searchProductCreatedDateFrom} searchProductCreatedDateTo={searchProductCreatedDateTo} />
 
 
                     {/* Link action */}
@@ -174,8 +194,8 @@ export default function ProductList() {
                                                         <td>{product.created_date}</td>
                                                         <td><a href="../../pages/comment/list.html">Đánh giá</a></td>
                                                         <td><a href="../../pages/image/list.html">Hình ảnh</a></td>
-                                                        <td><input type="button" onclick="Edit('25');" defaultValue="Sửa" className="btn btn-warning btn-sm" /></td>
-                                                        <td><input type="button" onclick="Delete('25');" defaultValue="Xóa" className="btn btn-danger btn-sm" /></td>
+                                                        <td><input type="button" onClick={() => handleEdit(product.product_id)} defaultValue="Sửa" className="btn btn-warning btn-sm" /></td>
+                                                        <td><input type="button" onClick={() => handleDelete(product.product_id)} defaultValue="Xóa" className="btn btn-danger btn-sm" /></td>
                                                     </tr>
                                                 )
                                         }

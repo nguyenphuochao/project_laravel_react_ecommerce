@@ -1,12 +1,16 @@
 import React from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 
 export default function Sidebar() {
+    const location = useLocation();
+    const pathname = location.pathname;
+
+
     return (
         <>
             <ul className="sidebar navbar-nav">
                 <li className="nav-item active">
-                    <NavLink className="nav-link" to="/admin"><i className="fas fa-fw fa-tachometer-alt" /> <span>Tổng quan</span></NavLink>
+                    <Link className="nav-link" to="/admin"><i className="fas fa-fw fa-tachometer-alt" /> <span>Tổng quan</span></Link>
                 </li>
                 <li className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id><i className="fas fa-shopping-cart" /> <span>Đơn hàng</span></a>
@@ -15,13 +19,15 @@ export default function Sidebar() {
                         <a className="dropdown-item" href="../../pages/order/add.html">Thêm</a>
                     </div>
                 </li>
-                <li className="nav-item dropdown">
-                    <Link className="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id><i className="fab fa-product-hunt" /> <span>Sản phẩm</span></Link>
-                    <div className="dropdown-menu" aria-labelledby>
-                        <NavLink className="dropdown-item" to="/admin/product/list">Danh sách</NavLink>
-                        <NavLink className="dropdown-item" to="/admin/product/add">Thêm</NavLink>
+                
+                <li className={`nav-item dropdown`}>
+                    <Link className="nav-link dropdown-toggle" data-toggle="dropdown" to="#" id><i className="fab fa-product-hunt" /> <span>Sản phẩm</span></Link>
+                    <div className="dropdown-menu">
+                        <Link className="dropdown-item" to="/admin/product/list">Danh sách</Link>
+                        <Link className="dropdown-item" to="/admin/product/add">Thêm</Link>
                     </div>
                 </li>
+
                 <li className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id><i className="fas fa-comments" /> <span>Comment</span></a>
                     <div className="dropdown-menu" aria-labelledby>
