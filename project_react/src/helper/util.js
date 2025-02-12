@@ -1,4 +1,7 @@
 import axios from "axios";
+import numeral from 'numeral'
+import 'numeral/locales';
+numeral.locale('vi');
 
 export const updateParam = (searchParams, setSearchParams, newParams) => {
     let params = {}
@@ -42,4 +45,9 @@ export const getAuthInfo = () => {
     }
 
     return initialState;
+}
+
+// Hàm chuyển đổi sang VNĐ
+export const formatMoney = (money) => {
+    return numeral(money).format('0,0');
 }

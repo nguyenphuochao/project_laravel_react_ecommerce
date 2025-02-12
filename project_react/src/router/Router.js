@@ -1,21 +1,32 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import Layout from '../component/Layout'
+import Layout from '../component/admin/Layout'
 import ProtectedRouter from './ProtectedRouter';
 import LoginRouter from './LoginRouter';
 
-// --- Admin Page ---
-import Dashboard from '../page/dashboard/Dashboard'
+// admin
+import Login from '../page/admin/auth/Login';
 
-import CategoryList from '../page/category/CategoryList'
-import CategoryAdd from '../page/category/CategoryAdd'
-import CategoryEdit from '../page/category/CategoryEdit'
+import Dashboard from '../page/admin/dashboard/Dashboard';
 
-import ProductList from '../page/product/ProductList'
-import Login from '../page/auth/Login'
-import ProductAdd from '../page/product/ProductAdd';
-import ProductEdit from '../page/product/ProductEdit';
+import CategoryList from '../page/admin/category/CategoryList';
+import CategoryAdd from '../page/admin/category/CategoryAdd';
+import CategoryEdit from '../page/admin/category/CategoryEdit';
 
+import ProductList from '../page/admin/product/ProductList';
+import ProductAdd from '../page/admin/product/ProductAdd';
+import ProductEdit from '../page/admin/product/ProductEdit';
+
+
+// site
+import { Layout as LayoutSite } from '../component/site/Layout';
+import HomePage from '../page/site/HomePage'
+import Product from '../page/site/Product';
+import ReturnPolicy from '../page/site/ReturnPolicy';
+import PaymentPolicy from '../page/site/PaymentPolicy';
+import DeliveryPolicy from '../page/site/DeliveryPolicy';
+import Contact from '../page/site/Contact';
+import ProductDetail from '../page/site/ProductDetail';
 
 
 export default function Router() {
@@ -23,14 +34,16 @@ export default function Router() {
     <>
       <Routes>
 
+        {/* ADMIN */}
+
         {/* Login */}
         <Route path="/login" element={<LoginRouter><Login /></LoginRouter>} />
 
-        {/* -- Layout -- */}
         <Route path="/admin" element={<Layout />} >
+
           {/* Dashboard */}
           <Route path="/admin" element={<ProtectedRouter><Dashboard /></ProtectedRouter>} />
-          
+
           {/* Category */}
           <Route path="/admin/category/list" element={<ProtectedRouter><CategoryList /></ProtectedRouter>} />
           <Route path="/admin/category/add" element={<ProtectedRouter><CategoryAdd /></ProtectedRouter>} />
@@ -39,11 +52,38 @@ export default function Router() {
           {/* Product */}
           <Route path="/admin/product/list" element={<ProtectedRouter><ProductList /></ProtectedRouter>} />
           <Route path="/admin/product/add" element={<ProtectedRouter><ProductAdd /></ProtectedRouter>} />
-          <Route path="/admin/product/edit" element={<ProtectedRouter><ProductEdit /></ProtectedRouter>} />
-          
+          <Route path="/admin/product/edit/:slug" element={<ProtectedRouter><ProductEdit /></ProtectedRouter>} />
+
         </Route>
-        {/* -- End Layout -- */}
+
+        {/* END ADMIN */}
+
+
+        {/* SITE */}
+
+        <Route path="" element={<LayoutSite />}>
+
+          {/* HomePage */}
+          <Route path="/" element={<HomePage />} />
+          {/* Product */}
+          <Route path="/san-pham.html" element={<Product />} />
+          {/* ProductDetail */}
+          <Route path="/san-pham/:slug" element={<ProductDetail />} />
+          {/* Return Policy */}
+          <Route path="/chinh-sach-doi-tra.html" element={<ReturnPolicy />} />
+          {/* PaymentPolicy */}
+          <Route path="/chinh-sach-thanh-toan.html" element={<PaymentPolicy />} />
+          {/* DeliveryPolicy */}
+          <Route path="/chinh-sach-giao-hang.html" element={<DeliveryPolicy />} />
+          {/* Contact */}
+          <Route path="/lien-he.html" element={<Contact />} />
+
+        </Route>
+
+        {/* END SITE */}
+
       </Routes>
+
     </>
   )
 }

@@ -1,9 +1,13 @@
 <?php
 
-use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\API\CategoryController;
-use App\Http\Controllers\API\ProductController;
-use Illuminate\Http\Request;
+// admin
+use App\Http\Controllers\API\Admin\AuthController;
+use App\Http\Controllers\API\Admin\CategoryController;
+use App\Http\Controllers\API\Admin\OrderController;
+use App\Http\Controllers\API\Admin\ProductController;
+
+// site
+use App\Http\Controllers\API\Site\ProductController as SiteProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,6 +21,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// ------ Admin ------
+
 // Login
 Route::post('login', [AuthController::class, 'login']);
 // Logout
@@ -24,6 +30,10 @@ Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanct
 
 // Xác thực nhóm API token
 Route::middleware('auth:sanctum')->group(function () {
+    // Dashboard
+    Route::get('orders', [OrderController::class, 'getOrders']);
+    Route::get('orders/getStatistical', [OrderController::class, 'getStatistical']);
+
     // get Staff
     Route::get('staff', [AuthController::class, 'getStaff']);
 
@@ -33,6 +43,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Products
     Route::apiResource('products', ProductController::class);
-    Route::get('products/getCategories', [ProductController::class, 'getCategories']);
-    Route::get('products/getBrands', [ProductController::class, 'getBrands']);
+    Route::get('getCategories', [ProductController::class, 'getCategories']);
+    Route::get('getBrands', [ProductController::class, 'getBrands']);
 });
+
+
+// ------ Site ------
+Route::get('site/products', [SiteProductController::class, 'getProducts']);
+Route::get('site/products/{id}', [SiteProductController::class, 'getProduct']);
