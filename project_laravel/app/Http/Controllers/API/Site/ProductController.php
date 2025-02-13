@@ -10,103 +10,102 @@ use Illuminate\Http\Response;
 
 class ProductController extends Controller
 {
+    // Lấy danh sách nổi bật
+    public function getFeaturedProducts()
+    {
+        $products = Product::where('featured', 1)->take(4)->get();
+        return $this->getDataProducts($products);
+    }
+
+    // Lấy sản phẩm mới nhất
+    public function getLatestFeaturedProducts()
+    {
+        $products = Product::orderBy('id', "DESC")->take(4)->get();
+        return $this->getDataProducts($products);
+    }
+
+    // Lấy sản phẩm theo danh mục
+    public function getProductsByCategory(Request $request)
+    {
+        $categories = Category::all();
+        $product_by_category = [];
+        foreach ($categories as $category) {
+            $products = Product::where('category_id', $category->id)->take(4)->get();
+            $product_by_category[] = array(
+                "cate_name" => $category->name,
+                "products" => $this->getDataProducts($products)
+            );
+        }
+
+        return $product_by_category;
+    }
+
     // Lấy danh sách sản phẩm
     public function getProducts(Request $request)
     {
-        // sleep(10);
-        // Sản phẩm nổi bật
-        $featured = $request->input('featured');
-        if ($featured) {
-            $products = Product::where('featured', 1)->take(4)->get();
-            return $this->getDataProduct($products);
-        }
+        $query = Product::query();
 
-        // Sản phẩm mới nhất
-        $latest = $request->input('latest');
-        if ($latest) {
-            $products = Product::orderBy('id', "DESC")->take(4)->get();
-            return $this->getDataProduct($products);
-        }
-
-        // Sản phẩm theo danh mục
-        $by_category = $request->input('by_category');
-        $categories = Category::all();
-        $product_by_category = [];
-        if ($by_category) {
-            foreach ($categories as $category) {
-                $products = Product::where('category_id', $category->id)->take(4)->get();
-                $product_by_category[] = array(
-                    "cate_name" => $category->name,
-                    "products" => $this->getDataProduct($products)
-                );
+        // Sếp theo theo
+        $sort_by = $request->input("sort-by");
+        if ($sort_by) {
+            if ($sort_by == "price-asc") {
+                $query->orderBy("sale_price", "ASC");
+            } else if ($sort_by == "price-desc") {
+                $query->orderBy("sale_price", "DESC");
+            } else if ($sort_by == "alpha-asc") {
+                $query->orderBy("name", "ASC");
+            } else if ($sort_by == "alpha-desc") {
+                $query->orderBy("name", "DESC");
+            } else if ($sort_by == "created-asc") {
+                $query->orderBy("created_date", "ASC");
+            } else if ($sort_by == "created-desc") {
+                $query->orderBy("created_date", "DESC");
             }
-
-            return $product_by_category;
         }
 
-        // Lấy tất cả sản phẩm
-        $all = $request->input('all');
-        if ($all) {
-            $query = Product::query();
-
-            // Sếp theo theo
-            $sort_by = $request->input("sort-by");
-            if ($sort_by) {
-                if ($sort_by == "price-asc") {
-                    $query->orderBy("sale_price", "ASC");
-                } else if ($sort_by == "price-desc") {
-                    $query->orderBy("sale_price", "DESC");
-                } else if ($sort_by == "alpha-asc") {
-                    $query->orderBy("name", "ASC");
-                } else if ($sort_by == "alpha-desc") {
-                    $query->orderBy("name", "DESC");
-                } else if ($sort_by == "created-asc") {
-                    $query->orderBy("created_date", "ASC");
-                } else if ($sort_by == "created-desc") {
-                    $query->orderBy("created_date", "DESC");
-                }
-            }
-
-            // Hiển thị theo danh mục sản phẩm
-            $category_id = $request->input("category-id");
-            if ($category_id) {
+        // Hiển thị theo danh mục sản phẩm
+        $category_id = $request->input("category-id");
+        if ($category_id) {
+            if ($category_id == "all") {
+                $query->where("category_id", ">", 0);
+            } else {
                 $query->where("category_id", $category_id);
             }
-
-            // Hiển thị theo khoảng giá
-            $price_range = $request->input("price-range");
-            if ($price_range) {
-                if ($price_range == "0-100000") {
-                    $query->whereBetween("sale_price", [0, 100000]);
-                } else if ($price_range == "100000-200000") {
-                    $query->whereBetween("sale_price", [100000, 200000]);
-                } else if ($price_range == "200000-300000") {
-                    $query->whereBetween("sale_price", [200000, 300000]);
-                } else if ($price_range == "300000-500000") {
-                    $query->whereBetween("sale_price", [300000, 500000]);
-                } else if ($price_range == "500000-1000000") {
-                    $query->whereBetween("sale_price", [500000, 1000000]);
-                } else if ($price_range == "1000000-greater") {
-                    $query->where("sale_price", ">=", 1000000);
-                }
-            }
-
-            $perPage = 12;
-            $page = $request->input('page', 1);
-            $totalItem = $query->count();
-            $totalPage = ceil($totalItem / $perPage);
-
-            $result = $query->offset(($page - 1) * $perPage)->limit($perPage)->get();
-
-            return response()->json([
-                "items" => $this->getDataProduct($result),
-                "totalItem" => $totalItem,
-                "pagination" => [
-                    "page" => (int)$page,
-                    "totalPage" => $totalPage
-                ]
-            ]);
         }
+
+        // Hiển thị theo khoảng giá
+        $price_range = $request->input("price-range");
+        if ($price_range) {
+            if ($price_range == "0-100000") {
+                $query->whereBetween("sale_price", [0, 100000]);
+            } else if ($price_range == "100000-200000") {
+                $query->whereBetween("sale_price", [100000, 200000]);
+            } else if ($price_range == "200000-300000") {
+                $query->whereBetween("sale_price", [200000, 300000]);
+            } else if ($price_range == "300000-500000") {
+                $query->whereBetween("sale_price", [300000, 500000]);
+            } else if ($price_range == "500000-1000000") {
+                $query->whereBetween("sale_price", [500000, 1000000]);
+            } else if ($price_range == "1000000-greater") {
+                $query->where("sale_price", ">=", 1000000);
+            }
+        }
+
+        $perPage = 12;
+        $page = $request->input('page', 1);
+        $totalItem = $query->count();
+        $totalPage = ceil($totalItem / $perPage);
+
+        $result = $query->offset(($page - 1) * $perPage)->limit($perPage)->get();
+
+        return response()->json([
+            "items" => $this->getDataProducts($result),
+            "totalItem" => $totalItem,
+            "pagination" => [
+                "page" => (int)$page,
+                "totalPage" => $totalPage
+            ]
+        ]);
     }
 
     // Lấy chi tiết sản phẩm theo id
@@ -120,11 +119,11 @@ class ProductController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
-        return current($this->getDataProduct($products));
+        return current($this->getDataProducts($products));
     }
 
     // Lấy Data Product
-    private function getDataProduct($products)
+    private function getDataProducts($products)
     {
         $date = date('Y-m-d');
         $data = [];

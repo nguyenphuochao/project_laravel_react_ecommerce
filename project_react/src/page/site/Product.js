@@ -16,11 +16,13 @@ export default function Product() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
     const sortBy = searchParams.get('sort-by') || '';
+    const priceRange = searchParams.get('price-range') || '';
+    const categoryId = searchParams.get('category-id') || 'all';
 
     // Lấy danh sách sản phẩm
     const getProducts = async () => {
         try {
-            const response = await axiosNonAuthInstance().get(`/site/products?all=1&page=${page}&sort-by=${sortBy}`);
+            const response = await axiosNonAuthInstance().get(`/site/products?page=${page}&sort-by=${sortBy}&price-range=${priceRange}&category-id=${categoryId}`);
             setProducts(response.data.items);
             setPagination(response.data.pagination);
             setIsLoaded(true)
@@ -56,14 +58,30 @@ export default function Product() {
 
     // Sắp sếp theo
     const handleSortBy = (value) => {
-        const newParams = { "sort-by": value };
+        setPage(1);
+        const newParams = {page : 1, "sort-by": value };
+        updateParam(searchParams, setSearchParams, newParams);
+    }
+
+    // Tìm theo khoảng giá
+    const handlePriceRange = (value) => {
+        setPage(1);
+        const newParams = { page : 1, "price-range": value };
+        updateParam(searchParams, setSearchParams, newParams);
+    }
+
+    // Tìm theo danh mục
+    const handleCategoryId = (e, category_id) => {
+        e.preventDefault();
+        setPage(1);
+        const newParams = { page : 1, "category-id": category_id };
         updateParam(searchParams, setSearchParams, newParams);
     }
 
     useEffect(() => {
         getProducts();
         // eslint-disable-next-line
-    }, [page, sortBy])
+    }, [page, sortBy, categoryId, priceRange])
 
 
     return (
@@ -87,7 +105,7 @@ export default function Product() {
                         </div>
                         <div className="clearfix" />
 
-                        <Aside />
+                        <Aside handleCategoryId={handleCategoryId} handlePriceRange={handlePriceRange} priceRange={priceRange} categoryId={categoryId} />
 
                         <div className="col-md-9 products">
                             <div className="row equal">

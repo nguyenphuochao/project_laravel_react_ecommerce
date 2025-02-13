@@ -5,7 +5,7 @@ use App\Http\Controllers\API\Admin\AuthController;
 use App\Http\Controllers\API\Admin\CategoryController;
 use App\Http\Controllers\API\Admin\OrderController;
 use App\Http\Controllers\API\Admin\ProductController;
-
+use App\Http\Controllers\API\Site\CategoryController as SiteCategoryController;
 // site
 use App\Http\Controllers\API\Site\ProductController as SiteProductController;
 use Illuminate\Support\Facades\Route;
@@ -49,5 +49,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 // ------ Site ------
-Route::get('site/products', [SiteProductController::class, 'getProducts']);
-Route::get('site/products/{id}', [SiteProductController::class, 'getProduct']);
+
+Route::get('site/products/featured', [SiteProductController::class, 'getFeaturedProducts']); // sản phẩm nổi bật
+Route::get('site/products/latest', [SiteProductController::class, 'getLatestFeaturedProducts']); // sản phẩm mới nhất
+Route::get('site/products/by_category', [SiteProductController::class, 'getProductsByCategory']); // sản phẩm theo danh mục
+Route::get('site/products', [SiteProductController::class, 'getProducts']); // danh sách sản phẩm
+Route::get('site/products/{id}', [SiteProductController::class, 'getProduct']); // chi tiết sản phẩm theo id
+
+Route::get('site/categories', [SiteCategoryController::class, 'getCategories']);

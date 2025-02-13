@@ -1,8 +1,13 @@
 import React from 'react'
+import { Helmet } from 'react-helmet'
 
 export default function DeliveryPolicy() {
     return (
         <>
+            <Helmet>
+                <title>Chính sách giao hàng</title>
+            </Helmet>
+
             <main id="maincontent" className="page-main">
                 <div className="container">
                     <div className="row">

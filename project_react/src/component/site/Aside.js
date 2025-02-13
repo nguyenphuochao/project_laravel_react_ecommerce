@@ -1,7 +1,30 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { axiosNonAuthInstance } from '../../helper/util';
+import { toast } from 'react-toastify';
+import Loading from './Loading';
 
-export default function Aside() {
+export default function Aside({ handleCategoryId, handlePriceRange, priceRange, categoryId }) {
+
+    const [categories, setCategories] = useState([]);
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    const getCategories = async () => {
+        try {
+            const response = await axiosNonAuthInstance().get('/site/categories');
+            setCategories(response.data);
+            setIsLoaded(true);
+        } catch (error) {
+            toast.error(error.message);
+            setIsLoaded(true);
+        }
+    }
+
+    useEffect(() => {
+        getCategories();
+    }, [])
+
+
     return (
         <>
             <aside className="col-md-3">
@@ -9,70 +32,63 @@ export default function Aside() {
                     <div className="category">
                         <h5>Danh mục sản phẩm</h5>
                         <ul>
-                            <li>
-                                <Link to="#" title="Tất cả sản phẩm" target="_self">Tất cả sản phẩm</Link>
+                            <li className={`${categoryId === "all" ? "active" : ""}`}>
+                                <Link to="#" onClick={(e) => handleCategoryId(e, "all")} title="Tất cả sản phẩm" target="_self">Tất cả sản phẩm</Link>
                             </li>
-                            <li className>
-                                <Link to="#" title="Kem Chống Nắng" target="_self">Kem Chống Nắng</Link>
-                            </li>
-                            <li className="active">
-                                <a href="#" title="Kem Dưỡng Da" target="_self">Kem Dưỡng Da</a>
-                            </li>
-                            <li className>
-                                <a href="#" title="Kem Trị Mụn" target="_self">Kem Trị Mụn</a>
-                            </li>
-                            <li className>
-                                <a href="#" title="Kem Trị Thâm Nám" target="_self">Kem Trị Thâm Nám</a>
-                            </li>
-                            <li className>
-                                <a href="#" title="Sữa Rửa Mặt" target="_self">Sữa Rửa Mặt</a>
-                            </li>
-                            <li className>
-                                <a href="#" title="Sữa Tắm" target="_self">Sữa Tắm</a>
-                            </li>
+
+                            {
+                                !isLoaded ? <Loading /> :
+                                    categories.map((category, index) =>
+                                        <li key={index} className={`${Number(categoryId) === category.id ? "active" : ""}`}>
+                                            <Link to="#" onClick={(e) => handleCategoryId(e, category.id)} title={category.name} target="_self">{category.name}</Link>
+                                        </li>
+                                    )
+                            }
+
                         </ul>
                     </div>
+
                     <div className="price-range">
                         <h5>Khoảng giá</h5>
                         <ul>
                             <li>
                                 <label htmlFor="filter-less-100">
-                                    <input type="radio" id="filter-less-100" name="filter-price" defaultValue="0-100000" />
+                                    <input type="radio" id="filter-less-100" name="filter-price" onChange={(e) => handlePriceRange(e.target.value)} defaultValue="0-100000" />
                                     <i className="fa" />
                                     Giá dưới 100.000đ
                                 </label>
                             </li>
                             <li>
                                 <label htmlFor="filter-100-200">
-                                    <input type="radio" id="filter-100-200" name="filter-price" defaultValue="100000-200000" />
+                                    <input type="radio" id="filter-100-200" name="filter-price" onChange={(e) => handlePriceRange(e.target.value)} defaultValue="100000-200000" />
                                     <i className="fa" />
                                     100.000đ - 200.000đ
                                 </label>
                             </li>
                             <li>
                                 <label htmlFor="filter-200-300">
-                                    <input type="radio" id="filter-200-300" name="filter-price" defaultValue="200000-300000" />
+                                    <input type="radio" id="filter-200-300" name="filter-price" onChange={(e) => handlePriceRange(e.target.value)} defaultValue="200000-300000" />
                                     <i className="fa" />
                                     200.000đ - 300.000đ
                                 </label>
                             </li>
                             <li>
                                 <label htmlFor="filter-300-500">
-                                    <input type="radio" id="filter-300-500" name="filter-price" defaultValue="300000-500000" />
+                                    <input type="radio" id="filter-300-500" name="filter-price" onChange={(e) => handlePriceRange(e.target.value)} defaultValue="300000-500000" />
                                     <i className="fa" />
                                     300.000đ - 500.000đ
                                 </label>
                             </li>
                             <li>
                                 <label htmlFor="filter-500-1000">
-                                    <input type="radio" id="filter-500-1000" name="filter-price" defaultValue="500000-1000000" />
+                                    <input type="radio" id="filter-500-1000" name="filter-price" onChange={(e) => handlePriceRange(e.target.value)} defaultValue="500000-1000000" />
                                     <i className="fa" />
                                     500.000đ - 1.000.000đ
                                 </label>
                             </li>
                             <li>
                                 <label htmlFor="filter-greater-1000">
-                                    <input type="radio" id="filter-greater-1000" name="filter-price" defaultValue="1000000-greater" />
+                                    <input type="radio" id="filter-greater-1000" name="filter-price" onChange={(e) => handlePriceRange(e.target.value)} defaultValue="1000000-greater" />
                                     <i className="fa" />
                                     Giá trên 1.000.000đ
                                 </label>

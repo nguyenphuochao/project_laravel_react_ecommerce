@@ -12,19 +12,19 @@ export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   const getProductFeatured = async () => {
-    const response = await axiosNonAuthInstance().get('/site/products?featured=1');
+    const response = await axiosNonAuthInstance().get('/site/products/featured');
     setIsLoaded(true);
     setProductFeatured(response.data);
   }
 
   const getProductLatest = async () => {
-    const response = await axiosNonAuthInstance().get('/site/products?latest=1');
+    const response = await axiosNonAuthInstance().get('/site/products/latest');
     setIsLoaded(true);
     setProductLatest(response.data);
   }
 
   const getProductByCat = async () => {
-    const response = await axiosNonAuthInstance().get('/site/products?by_category=1');
+    const response = await axiosNonAuthInstance().get('/site/products/by_category');
     setIsLoaded(true);
     setProductByCategory(response.data);
   }
