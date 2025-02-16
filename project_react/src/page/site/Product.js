@@ -11,8 +11,8 @@ import Pagination from '../../component/site/Pagination';
 export default function Product() {
     const [products, setProducts] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
-
     const [pagination, setPagination] = useState({ page: 1, totalPage: 0 });
+
     const [searchParams, setSearchParams] = useSearchParams();
     const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
     const sortBy = searchParams.get('sort-by') || '';
@@ -32,7 +32,7 @@ export default function Product() {
         }
     }
 
-    // Phân trang
+    // Click phân trang
     const handlePage = (e, page) => {
         e.preventDefault();
         setPage(page);
@@ -40,17 +40,19 @@ export default function Product() {
         updateParam(searchParams, setSearchParams, newParams);
     }
 
-    // Tiến tới 1 trang
+    // Click tiến tới 1 trang
     const handleNextPage = (e, page) => {
         e.preventDefault();
+        if(page === pagination.totalPage) return;
         setPage(page + 1);
         const newParams = { page: page + 1 };
         updateParam(searchParams, setSearchParams, newParams);
     }
 
-    // Lùi 1 trang
+    // Click lùi 1 trang
     const handlePrePage = (e, page) => {
         e.preventDefault();
+        if(page === 1) return;
         setPage(page - 1);
         const newParams = { page: page - 1 };
         updateParam(searchParams, setSearchParams, newParams);
@@ -59,14 +61,14 @@ export default function Product() {
     // Sắp sếp theo
     const handleSortBy = (value) => {
         setPage(1);
-        const newParams = {page : 1, "sort-by": value };
+        const newParams = { page: 1, "sort-by": value };
         updateParam(searchParams, setSearchParams, newParams);
     }
 
     // Tìm theo khoảng giá
     const handlePriceRange = (value) => {
         setPage(1);
-        const newParams = { page : 1, "price-range": value };
+        const newParams = { page: 1, "price-range": value };
         updateParam(searchParams, setSearchParams, newParams);
     }
 
@@ -74,7 +76,7 @@ export default function Product() {
     const handleCategoryId = (e, category_id) => {
         e.preventDefault();
         setPage(1);
-        const newParams = { page : 1, "category-id": category_id };
+        const newParams = { page: 1, "category-id": category_id };
         updateParam(searchParams, setSearchParams, newParams);
     }
 
@@ -96,7 +98,7 @@ export default function Product() {
                         <div className="col-xs-9">
                             <ol className="breadcrumb">
                                 <li><Link to="/" target="_self">Trang chủ</Link></li>
-                                <li><span>/</span></li>
+                                <li><span> / </span></li>
                                 <li className="active"><span>Tất cả sản phẩm</span></li>
                             </ol>
                         </div>
@@ -105,7 +107,8 @@ export default function Product() {
                         </div>
                         <div className="clearfix" />
 
-                        <Aside handleCategoryId={handleCategoryId} handlePriceRange={handlePriceRange} priceRange={priceRange} categoryId={categoryId} />
+                        <Aside handleCategoryId={handleCategoryId} handlePriceRange={handlePriceRange}
+                            priceRange={priceRange} categoryId={categoryId} />
 
                         <div className="col-md-9 products">
                             <div className="row equal">

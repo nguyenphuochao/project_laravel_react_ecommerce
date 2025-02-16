@@ -25,7 +25,7 @@ class ProductController extends Controller
     }
 
     // Lấy sản phẩm theo danh mục
-    public function getProductsByCategory(Request $request)
+    public function getProductsByCategory()
     {
         $categories = Category::all();
         $product_by_category = [];
@@ -111,15 +111,56 @@ class ProductController extends Controller
     // Lấy chi tiết sản phẩm theo id
     public function getProduct($id)
     {
-        $products = Product::where('id', $id)->get();
+        $product = Product::find($id);
 
-        if (count($products) == 0) {
+        if (!$product) {
             return response()->json([
                 "message" => "Không tồn tại sản phẩm id=" . $id
             ], Response::HTTP_NOT_FOUND);
         }
 
-        return current($this->getDataProducts($products));
+        $date = date('Y-m-d');
+
+        // Nhiều hình ảnh
+        $images = [];
+        foreach ($product->image_items as $image_item) {
+            $images[] = array(
+                "name" => $image_item->name
+            );
+        }
+
+        // Sản phẩm liên quan
+        $relatedProducts = [];
+        $products = Product::where("category_id", "=", $product->category_id)->get();
+        foreach ($products as $product) {
+            if ($product->id != $id) {
+                $relatedProducts[] = array(
+                    "product_id" => $product->id,
+                    "product_name" => $product->name,
+                    "price" => $product->price,
+                    "sale_price" => $product->discount_from_date <= $date && $product->discount_to_date >= $date ? $product->sale_price : $product->price,
+                    "featured_image" => $product->featured_image
+                );
+            }
+        }
+
+        // data
+        $product = array(
+            "product_id" => $product->id,
+            "barcode" => $product->barcode,
+            "product_name" => $product->name,
+            "price" => $product->price,
+            "sale_price" => $product->discount_from_date <= $date && $product->discount_to_date >= $date ? $product->sale_price : $product->price,
+            "featured_image" => $product->featured_image,
+            "image_items" => $images,
+            "inventory_qty" => $product->inventory_qty,
+            "category_name" => $product->category->name,
+            "brand_name" => $product->brand->name,
+            "description" => $product->description,
+            "relatedProducts" => $relatedProducts
+        );
+
+        return $product;
     }
 
     // Lấy Data Product

@@ -53,44 +53,44 @@ export default function Aside({ handleCategoryId, handlePriceRange, priceRange, 
                         <ul>
                             <li>
                                 <label htmlFor="filter-less-100">
-                                    <input type="radio" id="filter-less-100" name="filter-price" onChange={(e) => handlePriceRange(e.target.value)} defaultValue="0-100000" />
+                                    <input defaultChecked={`${priceRange === '0-100000' ? "checked" : ""}`} type="radio" id="filter-less-100" name="filter-price" onChange={(e) => handlePriceRange(e.target.value)} defaultValue="0-100000" />
                                     <i className="fa" />
-                                    Giá dưới 100.000đ
+                                    &nbsp; Giá dưới 100.000đ
                                 </label>
                             </li>
                             <li>
                                 <label htmlFor="filter-100-200">
-                                    <input type="radio" id="filter-100-200" name="filter-price" onChange={(e) => handlePriceRange(e.target.value)} defaultValue="100000-200000" />
+                                    <input defaultChecked={`${priceRange === '100000-200000' ? "checked" : ""}`} type="radio" id="filter-100-200" name="filter-price" onChange={(e) => handlePriceRange(e.target.value)} defaultValue="100000-200000" />
                                     <i className="fa" />
-                                    100.000đ - 200.000đ
+                                    &nbsp; 100.000đ - 200.000đ
                                 </label>
                             </li>
                             <li>
                                 <label htmlFor="filter-200-300">
-                                    <input type="radio" id="filter-200-300" name="filter-price" onChange={(e) => handlePriceRange(e.target.value)} defaultValue="200000-300000" />
+                                    <input defaultChecked={`${priceRange === '200000-300000' ? "checked" : ""}`} type="radio" id="filter-200-300" name="filter-price" onChange={(e) => handlePriceRange(e.target.value)} defaultValue="200000-300000" />
                                     <i className="fa" />
-                                    200.000đ - 300.000đ
+                                    &nbsp; 200.000đ - 300.000đ
                                 </label>
                             </li>
                             <li>
                                 <label htmlFor="filter-300-500">
-                                    <input type="radio" id="filter-300-500" name="filter-price" onChange={(e) => handlePriceRange(e.target.value)} defaultValue="300000-500000" />
+                                    <input defaultChecked={`${priceRange === '300000-500000' ? "checked" : ""}`} type="radio" id="filter-300-500" name="filter-price" onChange={(e) => handlePriceRange(e.target.value)} defaultValue="300000-500000" />
                                     <i className="fa" />
-                                    300.000đ - 500.000đ
+                                    &nbsp; 300.000đ - 500.000đ
                                 </label>
                             </li>
                             <li>
                                 <label htmlFor="filter-500-1000">
-                                    <input type="radio" id="filter-500-1000" name="filter-price" onChange={(e) => handlePriceRange(e.target.value)} defaultValue="500000-1000000" />
+                                    <input defaultChecked={`${priceRange === '500000-1000000' ? "checked" : ""}`} type="radio" id="filter-500-1000" name="filter-price" onChange={(e) => handlePriceRange(e.target.value)} defaultValue="500000-1000000" />
                                     <i className="fa" />
-                                    500.000đ - 1.000.000đ
+                                    &nbsp; 500.000đ - 1.000.000đ
                                 </label>
                             </li>
                             <li>
                                 <label htmlFor="filter-greater-1000">
-                                    <input type="radio" id="filter-greater-1000" name="filter-price" onChange={(e) => handlePriceRange(e.target.value)} defaultValue="1000000-greater" />
+                                    <input defaultChecked={`${priceRange === '1000000-greater' ? "checked" : ""}`} type="radio" id="filter-greater-1000" name="filter-price" onChange={(e) => handlePriceRange(e.target.value)} defaultValue="1000000-greater" />
                                     <i className="fa" />
-                                    Giá trên 1.000.000đ
+                                    &nbsp; Giá trên 1.000.000đ
                                 </label>
                             </li>
                         </ul>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import Loading from '../../../component/admin/Loading';
-import { axiosAuthInstance, updateParam } from '../../../helper/util';
+import { axiosAuthInstance, formatMoney, updateParam } from '../../../helper/util';
 import SearchProductForm from '../../../component/admin/SearchProductForm';
 import ShowQty from '../../../component/admin/ShowQty';
 import Pagination from '../../../component/admin/Pagination';
@@ -189,9 +189,9 @@ export default function ProductList() {
                                                         <td>#{product.barcode}</td>
                                                         <td>{product.product_name}</td>
                                                         <td><img src={product.image} alt={product.product_name} /></td>
-                                                        <td>{product.price} ₫</td>
+                                                        <td>{formatMoney(product.price)} ₫</td>
                                                         <td>{product.discount_percentage} %</td>
-                                                        <td>{product.sale_price} ₫</td>
+                                                        <td>{formatMoney(product.sale_price)} ₫</td>
                                                         <td>{product.inventory_qty}</td>
                                                         <td>{product.star}</td>
                                                         <td>{product.featured != null ? "Có" : ""}</td>

@@ -8,7 +8,6 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -27,7 +26,7 @@ class ProductController extends Controller
                     "product.featured_image as image",
                     "product.discount_percentage",
                     "product.price",
-                    DB::raw("product.price - (product.price * product.discount_percentage / 100) as sale_price"),
+                    "product.sale_price",
                     "product.inventory_qty",
                     "product.star",
                     "product.featured",

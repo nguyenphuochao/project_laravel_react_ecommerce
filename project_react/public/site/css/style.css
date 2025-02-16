@@ -196,8 +196,12 @@ nav.desktop-menu .navbar-nav>li>a {
 
 }
 
-nav.desktop-menu .navbar-nav>li>a:hover,
-nav.desktop-menu .navbar-nav>li>a:focus {
+nav.desktop-menu .navbar-nav>li>a.active {
+    color: #555;
+    background-color: #e7e7e7;
+}
+
+nav.desktop-menu .navbar-nav>li>a:hover {
     background-color: #C71815;
     color: #ffffff;
 }
