@@ -5,6 +5,7 @@ use App\Http\Controllers\API\Admin\AuthController;
 use App\Http\Controllers\API\Admin\CategoryController;
 use App\Http\Controllers\API\Admin\OrderController;
 use App\Http\Controllers\API\Admin\ProductController;
+use App\Http\Controllers\API\Site\AuthController as SiteAuthController;
 use App\Http\Controllers\API\Site\CategoryController as SiteCategoryController;
 // site
 use App\Http\Controllers\API\Site\ProductController as SiteProductController;
@@ -57,3 +58,5 @@ Route::get('site/products', [SiteProductController::class, 'getProducts']); // d
 Route::get('site/products/{id}', [SiteProductController::class, 'getProduct']); // chi tiết sản phẩm theo id
 
 Route::get('site/categories', [SiteCategoryController::class, 'getCategories']);
+
+Route::get('site/login', [SiteAuthController::class, 'Login']);

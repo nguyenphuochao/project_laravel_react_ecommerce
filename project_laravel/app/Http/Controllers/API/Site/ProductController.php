@@ -91,6 +91,11 @@ class ProductController extends Controller
             }
         }
 
+        $search = $request->input("search");
+        if ($search) {
+            $query->where("name", "like", '%' . $search . '%');
+        }
+
         $perPage = 12;
         $page = $request->input('page', 1);
         $totalItem = $query->count();

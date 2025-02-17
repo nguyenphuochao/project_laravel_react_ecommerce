@@ -18,11 +18,12 @@ export default function Product() {
     const sortBy = searchParams.get('sort-by') || '';
     const priceRange = searchParams.get('price-range') || '';
     const categoryId = searchParams.get('category-id') || 'all';
+    const search = searchParams.get('search') || '';
 
     // Lấy danh sách sản phẩm
     const getProducts = async () => {
         try {
-            const response = await axiosNonAuthInstance().get(`/site/products?page=${page}&sort-by=${sortBy}&price-range=${priceRange}&category-id=${categoryId}`);
+            const response = await axiosNonAuthInstance().get(`/site/products?page=${page}&sort-by=${sortBy}&price-range=${priceRange}&category-id=${categoryId}&search=${search}`);
             setProducts(response.data.items);
             setPagination(response.data.pagination);
             setIsLoaded(true)
@@ -83,7 +84,7 @@ export default function Product() {
     useEffect(() => {
         getProducts();
         // eslint-disable-next-line
-    }, [page, sortBy, categoryId, priceRange])
+    }, [page, sortBy, categoryId, priceRange, search])
 
 
     return (

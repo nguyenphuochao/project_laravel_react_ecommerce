@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
+import { axiosNonAuthInstance } from '../../helper/util';
+import SearchForm from './SearchForm';
 
 export default function Header() {
+    const [products, setProducts] = useState([]);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     const openMenuMobile = () => {
         document.querySelector('.menu-mb').style.width = "250px";
@@ -11,6 +15,26 @@ export default function Header() {
     const closeMenuMobile = () => {
         document.querySelector('.menu-mb').style.width = "0px";
         document.querySelector('.btn-menu-mb').style.width = "250px";
+    }
+
+    const getProducts = async (data) => {
+        try {
+            const response = await axiosNonAuthInstance().post('/site/products/search', data);
+            setProducts(response.data);
+            setIsLoaded(true)
+        } catch (error) {
+            setIsLoaded(true);
+        }
+    }
+
+    // Tìm kiếm sản phẩm theo tên
+    var keyUpTimer = useRef(null); // keyUpTimer will be a Ref object
+    const keyUpTimerDelay = 1000;
+    const handleSearch = (name) => {
+        clearTimeout(keyUpTimer.current);
+        keyUpTimer.current = setTimeout(() => {
+            getProducts(name)
+        }, keyUpTimerDelay);
     }
 
     return (
@@ -73,19 +97,9 @@ export default function Header() {
                                 <p className="hotline-phone"><span><strong>Hotline: </strong><a href="tel:0932.538.468">0932.538.468</a></span></p>
                                 <p className="hotline-email"><span><strong>Email: </strong><a href="mailto:nguyenhuulocla2006@gmail.com">nguyenhuulocla2006@gmail.com</a></span></p>
                             </div>
-                            <form className="header-form" action>
-                                <div className="input-group">
-                                    <input type="search" className="form-control search" placeholder="Nhập từ khóa tìm kiếm" name="search" autoComplete="off" defaultValue />
-                                    <div className="input-group-btn">
-                                        <button className="btn bt-search bg-color" type="submit"><i className="fa fa-search" style={{ color: '#fff' }} />
-                                        </button>
-                                    </div>
-                                    <input type="hidden" name="c" defaultValue="product" />
-                                    <input type="hidden" name="a" defaultValue="list" />
-                                </div>
-                                <div className="search-result">
-                                </div>
-                            </form>
+
+                            {/* Search Form */}
+                            <SearchForm />
                         </div>
                     </div>
                 </div>
