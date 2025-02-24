@@ -91,6 +91,7 @@ class ProductController extends Controller
             }
         }
 
+        // search theo tên sản phẩm
         $search = $request->input("search");
         if ($search) {
             $query->where("name", "like", '%' . $search . '%');
@@ -124,13 +125,14 @@ class ProductController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
+        $baseUrl = request()->getSchemeAndHttpHost();
         $date = date('Y-m-d');
 
         // Nhiều hình ảnh
         $images = [];
         foreach ($product->image_items as $image_item) {
             $images[] = array(
-                "name" => $image_item->name
+                "name" => $baseUrl . "/uploads/" . $image_item->name
             );
         }
 
@@ -144,7 +146,7 @@ class ProductController extends Controller
                     "product_name" => $product->name,
                     "price" => $product->price,
                     "sale_price" => $product->discount_from_date <= $date && $product->discount_to_date >= $date ? $product->sale_price : $product->price,
-                    "featured_image" => $product->featured_image
+                    "featured_image" => $baseUrl . "/uploads/" . $product->featured_image
                 );
             }
         }
@@ -156,7 +158,7 @@ class ProductController extends Controller
             "product_name" => $product->name,
             "price" => $product->price,
             "sale_price" => $product->discount_from_date <= $date && $product->discount_to_date >= $date ? $product->sale_price : $product->price,
-            "featured_image" => $product->featured_image,
+            "featured_image" => $baseUrl . "/uploads/" . $product->featured_image,
             "image_items" => $images,
             "inventory_qty" => $product->inventory_qty,
             "category_name" => $product->category->name,
@@ -171,6 +173,7 @@ class ProductController extends Controller
     // Lấy Data Product
     private function getDataProducts($products)
     {
+        $baseUrl = request()->getSchemeAndHttpHost(); // lấy domain hiện tại
         $date = date('Y-m-d');
         $data = [];
         foreach ($products as $product) {
@@ -181,7 +184,7 @@ class ProductController extends Controller
                 "product_name" => $product->name,
                 "price" => $product->price,
                 "sale_price" => $product->discount_from_date <= $date && $product->discount_to_date >= $date ? $discount : $product->price,
-                "featured_image" => $product->featured_image,
+                "featured_image" => $baseUrl . "/uploads/" . $product->featured_image,
                 "inventory_qty" => $product->inventory_qty,
                 "category_name" => $product->category->name,
                 "brand_name" => $product->brand->name,

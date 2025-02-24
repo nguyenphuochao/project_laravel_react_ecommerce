@@ -135,12 +135,11 @@ class ProductController extends Controller
         $product->discount_percentage = 0;
         $product->created_date = date('Y-m-d H:i:s');
         if ($request->hasFile('featured_image')) {
-            $baseUrl = request()->getSchemeAndHttpHost();
             $file = $request->file('featured_image');
             $path = public_path() . '/uploads';
             $file_name = time() . '_' . $file->getClientOriginalName();
             $file->move($path, $file_name);
-            $product->featured_image = $baseUrl . '/uploads/' . $file_name;
+            $product->featured_image = $file_name;
         }
 
         $product->save();

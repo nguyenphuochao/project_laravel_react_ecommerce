@@ -9,6 +9,7 @@ use App\Http\Controllers\API\Site\AuthController as SiteAuthController;
 use App\Http\Controllers\API\Site\CategoryController as SiteCategoryController;
 // site
 use App\Http\Controllers\API\Site\ProductController as SiteProductController;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,7 +24,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 // ------ Admin ------
-
+// Render password
+Route::get('render-pass', function() {
+    echo Hash::make('123456');
+});
 // Login
 Route::post('login', [AuthController::class, 'login']);
 // Logout
