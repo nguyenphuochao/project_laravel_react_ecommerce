@@ -1,11 +1,12 @@
-import React, { useRef, useState } from 'react'
+import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { axiosNonAuthInstance } from '../../helper/util';
 import SearchForm from './SearchForm';
+import { useSelector } from 'react-redux';
 
 export default function Header() {
-    const [products, setProducts] = useState([]);
-    const [isLoaded, setIsLoaded] = useState(false);
+
+    const cart = useSelector(state => state.CartReducer.cartItems);
+    const totalCart = cart.reduce((total, item) => total + Number(item.qty), 0); // tổng số lượng cart
 
     const openMenuMobile = () => {
         document.querySelector('.menu-mb').style.width = "250px";
@@ -15,26 +16,6 @@ export default function Header() {
     const closeMenuMobile = () => {
         document.querySelector('.menu-mb').style.width = "0px";
         document.querySelector('.btn-menu-mb').style.width = "250px";
-    }
-
-    const getProducts = async (data) => {
-        try {
-            const response = await axiosNonAuthInstance().post('/site/products/search', data);
-            setProducts(response.data);
-            setIsLoaded(true)
-        } catch (error) {
-            setIsLoaded(true);
-        }
-    }
-
-    // Tìm kiếm sản phẩm theo tên
-    var keyUpTimer = useRef(null); // keyUpTimer will be a Ref object
-    const keyUpTimerDelay = 1000;
-    const handleSearch = (name) => {
-        clearTimeout(keyUpTimer.current);
-        keyUpTimer.current = setTimeout(() => {
-            getProducts(name)
-        }, keyUpTimerDelay);
     }
 
     return (
@@ -121,7 +102,7 @@ export default function Header() {
                     </ul>
                     <span className="hidden-lg hidden-md experience">Trải nghiệm cùng sản phẩm của Goda</span>
                     <ul className="nav navbar-nav navbar-right">
-                        <li className="cart"><Link to="#" className="btn-cart-detail" title="Giỏ Hàng"><i className="fa fa-shopping-cart" /> <span className="number-total-product">6</span></Link></li>
+                        <li className="cart"><Link to="#" className="btn-cart-detail" title="Giỏ Hàng"><i className="fa fa-shopping-cart" /> <span className="number-total-product">{totalCart}</span></Link></li>
                     </ul>
                 </div>
             </nav>

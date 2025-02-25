@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\Site;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ViewProduct;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -13,14 +14,14 @@ class ProductController extends Controller
     // Lấy danh sách nổi bật
     public function getFeaturedProducts()
     {
-        $products = Product::where('featured', 1)->take(4)->get();
+        $products = ViewProduct::where('featured', 1)->take(4)->get();
         return $this->getDataProducts($products);
     }
 
     // Lấy sản phẩm mới nhất
     public function getLatestFeaturedProducts()
     {
-        $products = Product::orderBy('id', "DESC")->take(4)->get();
+        $products = ViewProduct::orderBy('id', "DESC")->take(4)->get();
         return $this->getDataProducts($products);
     }
 
@@ -30,7 +31,7 @@ class ProductController extends Controller
         $categories = Category::all();
         $product_by_category = [];
         foreach ($categories as $category) {
-            $products = Product::where('category_id', $category->id)->take(4)->get();
+            $products = ViewProduct::where('category_id', $category->id)->take(4)->get();
             $product_by_category[] = array(
                 "cate_name" => $category->name,
                 "products" => $this->getDataProducts($products)
@@ -43,7 +44,7 @@ class ProductController extends Controller
     // Lấy danh sách sản phẩm
     public function getProducts(Request $request)
     {
-        $query = Product::query();
+        $query = ViewProduct::query();
 
         // Sếp theo theo
         $sort_by = $request->input("sort-by");
@@ -117,7 +118,7 @@ class ProductController extends Controller
     // Lấy chi tiết sản phẩm theo id
     public function getProduct($id)
     {
-        $product = Product::find($id);
+        $product = ViewProduct::find($id);
 
         if (!$product) {
             return response()->json([
@@ -126,7 +127,6 @@ class ProductController extends Controller
         }
 
         $baseUrl = request()->getSchemeAndHttpHost();
-        $date = date('Y-m-d');
 
         // Nhiều hình ảnh
         $images = [];
@@ -138,15 +138,15 @@ class ProductController extends Controller
 
         // Sản phẩm liên quan
         $relatedProducts = [];
-        $products = Product::where("category_id", "=", $product->category_id)->get();
-        foreach ($products as $product) {
-            if ($product->id != $id) {
+        $products = ViewProduct::where("category_id", "=", $product->category_id)->get();
+        foreach ($products as $related_item) {
+            if ($related_item->id != $id) {
                 $relatedProducts[] = array(
-                    "product_id" => $product->id,
-                    "product_name" => $product->name,
-                    "price" => $product->price,
-                    "sale_price" => $product->discount_from_date <= $date && $product->discount_to_date >= $date ? $product->sale_price : $product->price,
-                    "featured_image" => $baseUrl . "/uploads/" . $product->featured_image
+                    "product_id" => $related_item->id,
+                    "product_name" => $related_item->name,
+                    "price" => $related_item->price,
+                    "sale_price" => $related_item->sale_price,
+                    "featured_image" => $baseUrl . "/uploads/" . $related_item->featured_image
                 );
             }
         }
@@ -157,7 +157,7 @@ class ProductController extends Controller
             "barcode" => $product->barcode,
             "product_name" => $product->name,
             "price" => $product->price,
-            "sale_price" => $product->discount_from_date <= $date && $product->discount_to_date >= $date ? $product->sale_price : $product->price,
+            "sale_price" => (int)$product->sale_price,
             "featured_image" => $baseUrl . "/uploads/" . $product->featured_image,
             "image_items" => $images,
             "inventory_qty" => $product->inventory_qty,
@@ -174,16 +174,14 @@ class ProductController extends Controller
     private function getDataProducts($products)
     {
         $baseUrl = request()->getSchemeAndHttpHost(); // lấy domain hiện tại
-        $date = date('Y-m-d');
         $data = [];
         foreach ($products as $product) {
-            $discount = $product->price * (1 - $product->discount_percentage / 100);
             $data[] = array(
                 "product_id" => $product->id,
                 "barcode" => $product->barcode,
                 "product_name" => $product->name,
                 "price" => $product->price,
-                "sale_price" => $product->discount_from_date <= $date && $product->discount_to_date >= $date ? $discount : $product->price,
+                "sale_price" => (int)$product->sale_price,
                 "featured_image" => $baseUrl . "/uploads/" . $product->featured_image,
                 "inventory_qty" => $product->inventory_qty,
                 "category_name" => $product->category->name,

@@ -28,18 +28,19 @@ use Illuminate\Support\Facades\Route;
 Route::get('render-pass', function() {
     echo Hash::make('123456');
 });
+
 // Login
 Route::post('login', [AuthController::class, 'login']);
+
 // Logout
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 // Xác thực nhóm API token
 Route::middleware('auth:sanctum')->group(function () {
-    // Dashboard
+    // Orders
     Route::get('orders', [OrderController::class, 'getOrders']);
-    Route::get('orders/getStatistical', [OrderController::class, 'getStatistical']);
 
-    // get Staff
+    // Auth
     Route::get('staff', [AuthController::class, 'getStaff']);
 
     // Categories

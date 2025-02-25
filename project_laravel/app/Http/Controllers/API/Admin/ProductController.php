@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ViewProduct;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -17,7 +18,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         // query join product vs category
-        $query = Product::query()->join("category", "category.id", "=", "product.category_id")
+        $query = ViewProduct::query()->join("category", "category.id", "=", "product.category_id")
             ->select(
                 [
                     "product.id as product_id",
@@ -124,7 +125,6 @@ class ProductController extends Controller
         $product->sku = $request->sku;
         $product->name = $request->name;
         $product->price = $request->price;
-        $product->sale_price = $request->price;
         $product->inventory_qty = $request->inventory_qty;
         $product->category_id = $request->category_id;
         $product->brand_id = $request->brand_id;
@@ -212,12 +212,11 @@ class ProductController extends Controller
         $product->discount_percentage = 0;
         $product->created_date = date('Y-m-d H:i:s');
         if ($request->hasFile('featured_image')) {
-            $baseUrl = request()->getSchemeAndHttpHost();
             $file = $request->file('featured_image');
             $path = public_path() . '/uploads';
             $file_name = time() . '_' . $file->getClientOriginalName();
             $file->move($path, $file_name);
-            $product->featured_image = $baseUrl . '/uploads/' . $file_name;
+            $product->featured_image = $file_name;
         }
 
         $product->save();
@@ -239,6 +238,7 @@ class ProductController extends Controller
         }
 
         Product::destroy($id);
+
         return response()->json([
             "message" => "Đã xóa sản phẩm thành công"
         ],  Response::HTTP_OK);

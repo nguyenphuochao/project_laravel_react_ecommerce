@@ -1,8 +1,33 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { formatMoney } from '../../helper/util'
+import { axiosNonAuthInstance, formatMoney } from '../../helper/util'
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 
 export default function ProductList({ product }) {
+    const dispatch = useDispatch();
+
+    const handleAddToCart = async (id) => {
+
+        try {
+            const response = await axiosNonAuthInstance().get(`/site/products/${id}`);
+            const product = response.data;
+            const item = {
+                id: product.product_id,
+                name: product.product_name,
+                featured_image: product.featured_image,
+                sale_price: product.sale_price,
+                qty: 1
+            };
+
+            // tạo action để dispatch lên store
+            const action = { type: "ADD_TO_CART", payload: item }
+            dispatch(action);
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
     return (
         <>
             <div className="product-container">
@@ -28,7 +53,7 @@ export default function ProductList({ product }) {
                 </div>
                 <div className="button-product-action clearfix">
                     <div className="cart icon">
-                        <Link className="btn btn-outline-inverse buy" product-id={2} to="#" title="Thêm vào giỏ">
+                        <Link className="btn btn-outline-inverse buy" onClick={() => handleAddToCart(product.product_id)} to="#" title="Thêm vào giỏ">
                             Thêm vào giỏ <i className="fa fa-shopping-cart" />
                         </Link>
                     </div>

@@ -42,6 +42,7 @@ class AuthController extends Controller
                 "staff" => $staff,
                 "token" => $token
             ]);
+
         } catch (\Throwable $th) {
 
             if ($th instanceof ValidationException) {
@@ -59,7 +60,7 @@ class AuthController extends Controller
     public function logout()
     {
         try {
-            request()->user()->currentAccessToken()->delete();
+            request()->user()->currentAccessToken()->delete(); // xóa token
 
             return response()->json([
                 'message' => 'Logout success'

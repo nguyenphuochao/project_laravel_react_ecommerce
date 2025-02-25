@@ -28,19 +28,4 @@ class Product extends Model
         "featured"
     ];
     public $timestamps = false;
-
-    function category()
-    {
-        return $this->belongsTo(Category::class, "category_id");
-    }
-
-    function brand()
-    {
-        return $this->belongsTo(Brand::class, "brand_id");
-    }
-
-    function image_items()
-    {
-        return $this->hasMany(ImageItem::class, "product_id");
-    }
 }
