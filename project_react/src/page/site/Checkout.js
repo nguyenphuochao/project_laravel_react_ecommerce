@@ -5,6 +5,9 @@ import { useSelector } from 'react-redux';
 import { formatMoney } from '../../helper/util';
 
 export default function Checkout() {
+    const is_login = useSelector(state => state.AuthReducer.isLogin);
+    const loggedUser = useSelector(state => state.AuthReducer.loggedUser);
+
     const cart = useSelector(state => state.CartReducer.cartItems);
     const subTotal = cart.reduce((total, item) => total + Number(item.sale_price * item.qty), 0);
     const shipping_fee = 50000;
@@ -76,12 +79,17 @@ export default function Checkout() {
                         </aside>
 
                         <div className="ship-checkout col-md-6">
-                            <h4>Thông tin giao hàng</h4>
-                            <div>Bạn đã có tài khoản? <a href="javascript:void(0)" className="btn-login">Đăng Nhập</a></div>
-                            <br />
+                        <h4>Thông tin giao hàng</h4>
+                            {
+                                is_login ? null :
+                                    <>
+                                        <div>Bạn đã có tài khoản? <Link to="#" className="btn-login">Đăng Nhập</Link></div>
+                                        <br/>
+                                    </>
+                            }
 
                             {/* Form checkout */}
-                            <DeliveryInfo />
+                            <DeliveryInfo loggedUser={loggedUser} />
 
                         </div>
                     </div>

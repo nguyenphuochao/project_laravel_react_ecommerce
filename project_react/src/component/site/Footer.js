@@ -1,5 +1,6 @@
 import React from 'react'
 import Cart from './Cart'
+import LoginForm from './LoginForm'
 
 export default function Footer() {
   return (
@@ -110,43 +111,11 @@ export default function Footer() {
           </div>
         </div>
         {/* END REGISTER DIALOG */}
+
         {/* LOGIN DIALOG */}
-        <div className="modal fade" id="modal-login" role="dialog">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header bg-color">
-                <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 className="modal-title text-center">Đăng nhập</h3>
-                {/* Google login */}
-                <br />
-                <div className="text-center">
-                  <a className="btn btn-primary google-login" href="#"><i className="fab fa-google" /> Đăng nhập bằng Google</a>
-                  {/* Facebook login */}
-                  <a className="btn btn-primary facebook-login" href="#"><i className="fab fa-facebook-f" /> Đăng nhập bằng Facebook</a>
-                </div>
-              </div>
-              <form action="#" method="POST" role="form">
-                <div className="modal-body">
-                  <div className="form-group">
-                    <input type="email" name="email" className="form-control" placeholder="Email" required />
-                  </div>
-                  <div className="form-group">
-                    <input type="password" name="password" className="form-control" placeholder="Mật khẩu" required />
-                  </div>
-                  <input type="hidden" name="reference" defaultValue />
-                </div>
-                <div className="modal-footer">
-                  <button type="submit" className="btn btn-primary">Đăng Nhập</button><br />
-                  <div className="text-left">
-                    <a href="javascript:void(0)" className="btn-register">Bạn chưa là thành viên? Đăng kí ngay!</a>
-                    <a href="javascript:void(0)" className="btn-forgot-password">Quên Mật Khẩu?</a>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-        &lt; !--END LOGIN DIALOG-- &gt;
+        <LoginForm />
+        {/* END LOGIN DIALOG */}
+
         &lt; !--FORTGOT PASSWORD DIALOG-- &gt;
         <div className="modal fade" id="modal-forgot-password" role="dialog">
           <div className="modal-dialog">

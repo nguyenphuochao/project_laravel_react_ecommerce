@@ -2,11 +2,14 @@ import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import SearchForm from './SearchForm';
 import { useDispatch, useSelector } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
 
 export default function Header() {
     const dispatch = useDispatch();
 
     const cart = useSelector(state => state.CartReducer.cartItems);
+    const is_login = useSelector(state => state.AuthReducer.isLogin);
+    const loggedUser = useSelector(state => state.AuthReducer.loggedUser);
     const totalCart = cart.reduce((total, item) => total + Number(item.qty), 0); // tổng số lượng cart
 
     const openMenuMobile = () => {
@@ -19,11 +22,27 @@ export default function Header() {
         document.querySelector('.btn-menu-mb').style.width = "250px";
     }
 
+    // mở popup cart
     const openPopupCart = (e) => {
         e.preventDefault();
-        const action = { type : "POPUP_CART" };
+        const action = { type: "POPUP_CART" };
         dispatch(action);
     }
+
+    // mở popup login
+    const openPopupLogin = (e) => {
+        e.preventDefault();
+        const action = { type: "POPUP_LOGIN" };
+        dispatch(action);
+    }
+
+    // mở popup register
+    const openPopupRegister = (e) => {
+        e.preventDefault();
+        const action = { type: "POPUP_REGISTER" };
+        dispatch(action);
+    }
+
 
     return (
         <>
@@ -57,12 +76,34 @@ export default function Header() {
                         </div>
                         <div className="col-md-6 col-sm-10 col-xs-11">
                             <ul className="list-inline pull-right top-right">
-                                <li className="account-login">
-                                    <Link to="#" className="btn-register">Đăng Ký</Link>
-                                </li>
-                                <li>
-                                    <Link to="#" className="btn-login">Đăng Nhập</Link>
-                                </li>
+                                {
+                                    !is_login ?
+                                        <>
+                                            <li className="account-login">
+                                                <Link onClick={(e) => openPopupRegister(e)} to="#" className="btn-register">Đăng Ký</Link>
+                                            </li>
+                                            <li>
+                                                <Link onClick={(e) => openPopupLogin(e)} to="#" className="btn-login">Đăng Nhập</Link>
+                                            </li>
+                                        </>
+                                        :
+                                        <>
+                                            <li class="account-login">
+                                                <Link to="/don-hang-cua-toi.html" class="btn-logout">Đơn hàng của tôi</Link>
+                                            </li>
+                                            <li>
+                                                <Link href="#" class="btn-account dropdown-toggle" data-toggle="dropdown" id="dropdownMenu">{loggedUser.name}</Link>
+                                                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu">
+                                                    <li><a href="thong-tin-tai-khoan.html">Thông tin tài khoản</a></li>
+                                                    <li><a href="dia-chi-giao-hang-mac-dinh.html">Địa chỉ giao hàng</a></li>
+                                                    <li><a href="don-hang-cua-toi.html">Đơn hàng của tôi</a></li>
+                                                    <li role="separator" class="divider"></li>
+                                                    <li><Link to="#">Thoát</Link></li>
+                                                </ul>
+                                            </li>
+                                        </>
+                                }
+
                             </ul>
                         </div>
                     </div>
@@ -115,6 +156,7 @@ export default function Header() {
             </nav>
             {/* END NAVBAR DESKTOP*/}
 
+            <ToastContainer />
         </>
     )
 }

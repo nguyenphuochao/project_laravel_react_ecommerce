@@ -39,7 +39,7 @@ class AuthController extends Controller
             $token = $customer->createToken($customer->id)->plainTextToken;
 
             return response()->json([
-                "customer" => $customer,
+                "customer" => $this->convertToAPICustomer($customer),
                 "token" => $token
             ]);
         } catch (\Throwable $th) {
@@ -56,7 +56,28 @@ class AuthController extends Controller
         }
     }
 
-    public function getCustomer(Request $request) {
+    public function getCustomer(Request $request)
+    {
         return $request->user();
+    }
+
+    private function convertToAPICustomer($object)
+    {
+        $data = array(
+            "id" => $object->id,
+            "name" => $object->name,
+            "mobile" => $object->mobile,
+            "email" => $object->email,
+            "login_by" => $object->login_by,
+            "province_id" => (string)$object->ward->district->province->id, // relationship
+            "district_id" => (string)$object->ward->district->id, // relationship
+            "ward_id" => $object->ward_id,
+            "shipping_name" => $object->shipping_name,
+            "shipping_mobile" => $object->shipping_mobile,
+            "housenumber_street" => $object->housenumber_street,
+            "is_active" => 1
+        );
+
+        return $data;
     }
 }

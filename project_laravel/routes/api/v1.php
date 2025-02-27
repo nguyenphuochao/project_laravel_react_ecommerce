@@ -8,6 +8,7 @@ use App\Http\Controllers\API\Admin\ProductController;
 use App\Http\Controllers\API\Site\AddressController;
 use App\Http\Controllers\API\Site\AuthController as SiteAuthController;
 use App\Http\Controllers\API\Site\CategoryController as SiteCategoryController;
+use App\Http\Controllers\API\Site\OrderController as SiteOrderController;
 // site
 use App\Http\Controllers\API\Site\ProductController as SiteProductController;
 use Illuminate\Support\Facades\Hash;
@@ -24,9 +25,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// ------ Admin ------
+// ------ Admin ------ //
+
 // Render password
-Route::get('render-pass', function() {
+Route::get('render-pass', function () {
     echo Hash::make('123456');
 });
 
@@ -55,7 +57,7 @@ Route::middleware('auth:staff')->group(function () {
 });
 
 
-// ------ Site ------
+// ------ Site ------ //
 
 Route::get('site/products/featured', [SiteProductController::class, 'getFeaturedProducts']); // sản phẩm nổi bật
 Route::get('site/products/latest', [SiteProductController::class, 'getLatestFeaturedProducts']); // sản phẩm mới nhất
@@ -63,12 +65,14 @@ Route::get('site/products/by_category', [SiteProductController::class, 'getProdu
 Route::get('site/products', [SiteProductController::class, 'getProducts']); // danh sách sản phẩm
 Route::get('site/products/{id}', [SiteProductController::class, 'getProduct']); // chi tiết sản phẩm theo id
 
-Route::get('site/categories', [SiteCategoryController::class, 'getCategories']);
+Route::get('site/categories', [SiteCategoryController::class, 'getCategories']); // danh sách categories
 
-Route::get('site/login', [SiteAuthController::class, 'Login']);
-Route::get('site/customer', [SiteAuthController::class, 'getCustomer'])->middleware('auth:customer');
+Route::post('site/login', [SiteAuthController::class, 'Login']); // đăng nhập
+Route::get('site/customer', [SiteAuthController::class, 'getCustomer'])->middleware('auth:customer'); // thông tin customer
 
-Route::get('site/provinces', [AddressController::class, 'getProvinces']);
-Route::get('site/districts/{province_id}', [AddressController::class, 'getDistrics']);
-Route::get('site/wards/{district_id}', [AddressController::class, 'getWards']);
-Route::get('site/shipping_fee/{province_id}', [AddressController::class, 'getShippingFee']);
+Route::get('site/provinces', [AddressController::class, 'getProvinces']); // danh sách tỉnh/thành phố
+Route::get('site/districts/{province_id}', [AddressController::class, 'getDistrics']); // danh sách quận/huyện
+Route::get('site/wards/{district_id}', [AddressController::class, 'getWards']); // danh sách phường/xã
+Route::get('site/shipping_fee/{province_id}', [AddressController::class, 'getShippingFee']); // phí giao hàng
+
+Route::post('site/order', [SiteOrderController::class, 'order']); // đặt hàng

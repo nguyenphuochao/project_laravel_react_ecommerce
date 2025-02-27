@@ -15,4 +15,9 @@ class Customer extends Authenticatable
     protected $table = "customer";
     protected $fillable = ['name', 'email', 'password'];
     protected $hidden = ['password'];
+
+    function ward()
+    {
+        return $this->belongsTo(Ward::class, "ward_id");
+    }
 }
