@@ -1,9 +1,10 @@
 import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import SearchForm from './SearchForm';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function Header() {
+    const dispatch = useDispatch();
 
     const cart = useSelector(state => state.CartReducer.cartItems);
     const totalCart = cart.reduce((total, item) => total + Number(item.qty), 0); // tổng số lượng cart
@@ -16,6 +17,12 @@ export default function Header() {
     const closeMenuMobile = () => {
         document.querySelector('.menu-mb').style.width = "0px";
         document.querySelector('.btn-menu-mb').style.width = "250px";
+    }
+
+    const openPopupCart = (e) => {
+        e.preventDefault();
+        const action = { type : "POPUP_CART" };
+        dispatch(action);
     }
 
     return (
@@ -102,7 +109,7 @@ export default function Header() {
                     </ul>
                     <span className="hidden-lg hidden-md experience">Trải nghiệm cùng sản phẩm của Goda</span>
                     <ul className="nav navbar-nav navbar-right">
-                        <li className="cart"><Link to="#" className="btn-cart-detail" title="Giỏ Hàng"><i className="fa fa-shopping-cart" /> <span className="number-total-product">{totalCart}</span></Link></li>
+                        <li className="cart"><Link onClick={(e) => openPopupCart(e)} to="#" className="btn-cart-detail" title="Giỏ Hàng"><i className="fa fa-shopping-cart" /> <span className="number-total-product">{totalCart}</span></Link></li>
                     </ul>
                 </div>
             </nav>

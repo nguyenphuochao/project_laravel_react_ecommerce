@@ -5,6 +5,7 @@ use App\Http\Controllers\API\Admin\AuthController;
 use App\Http\Controllers\API\Admin\CategoryController;
 use App\Http\Controllers\API\Admin\OrderController;
 use App\Http\Controllers\API\Admin\ProductController;
+use App\Http\Controllers\API\Site\AddressController;
 use App\Http\Controllers\API\Site\AuthController as SiteAuthController;
 use App\Http\Controllers\API\Site\CategoryController as SiteCategoryController;
 // site
@@ -36,7 +37,7 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 // Xác thực nhóm API token
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:staff')->group(function () {
     // Orders
     Route::get('orders', [OrderController::class, 'getOrders']);
 
@@ -65,3 +66,9 @@ Route::get('site/products/{id}', [SiteProductController::class, 'getProduct']); 
 Route::get('site/categories', [SiteCategoryController::class, 'getCategories']);
 
 Route::get('site/login', [SiteAuthController::class, 'Login']);
+Route::get('site/customer', [SiteAuthController::class, 'getCustomer'])->middleware('auth:customer');
+
+Route::get('site/provinces', [AddressController::class, 'getProvinces']);
+Route::get('site/districts/{province_id}', [AddressController::class, 'getDistrics']);
+Route::get('site/wards/{district_id}', [AddressController::class, 'getWards']);
+Route::get('site/shipping_fee/{province_id}', [AddressController::class, 'getShippingFee']);

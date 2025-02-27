@@ -46,6 +46,12 @@ return [
             'driver' => 'sanctum',
             'provider' => 'staff',
         ],
+
+        // thêm guards customer
+        'customer' => [
+            'driver' => 'sanctum',
+            'provider' => 'customer',
+        ],
     ],
 
     /*
@@ -80,6 +86,12 @@ return [
         'staff' => [
             'driver' => 'eloquent',
             'model' => App\Models\Staff::class,
+        ],
+
+        // Cấu hình Auth Guards Customer
+        'customer' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Customer::class,
         ],
     ],
 

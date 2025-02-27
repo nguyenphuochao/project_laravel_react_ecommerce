@@ -27,6 +27,7 @@ import PaymentPolicy from '../page/site/PaymentPolicy';
 import DeliveryPolicy from '../page/site/DeliveryPolicy';
 import Contact from '../page/site/Contact';
 import ProductDetail from '../page/site/ProductDetail';
+import Checkout from '../page/site/Checkout';
 
 
 export default function Router() {
@@ -77,6 +78,8 @@ export default function Router() {
           <Route path="/chinh-sach-giao-hang.html" element={<DeliveryPolicy />} />
           {/* Contact */}
           <Route path="/lien-he.html" element={<Contact />} />
+          {/* Checkout */}
+          <Route path="/dat-hang.html" element={<Checkout />} />
 
         </Route>
 
