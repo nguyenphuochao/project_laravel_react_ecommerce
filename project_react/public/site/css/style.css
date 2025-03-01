@@ -837,5 +837,11 @@ main .product-detail .product-related .owl-next {
     }
 }
 
+/* Popup */
+.modal-body {
+    max-height: 500px; /* hoặc giá trị phù hợp */
+    overflow-y: auto;
+}
+
 
 /*END*/

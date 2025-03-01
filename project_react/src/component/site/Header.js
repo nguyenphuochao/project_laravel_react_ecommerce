@@ -1,10 +1,11 @@
 import React from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import SearchForm from './SearchForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 
 export default function Header() {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const cart = useSelector(state => state.CartReducer.cartItems);
@@ -41,6 +42,15 @@ export default function Header() {
         e.preventDefault();
         const action = { type: "POPUP_REGISTER" };
         dispatch(action);
+    }
+
+    // đăng xuất
+    const handleLogout = (e) => {
+        e.preventDefault();
+        const action = { type: "LOGOUT" };
+        dispatch(action);
+        navigate('/');
+        
     }
 
 
@@ -98,7 +108,7 @@ export default function Header() {
                                                     <li><a href="dia-chi-giao-hang-mac-dinh.html">Địa chỉ giao hàng</a></li>
                                                     <li><a href="don-hang-cua-toi.html">Đơn hàng của tôi</a></li>
                                                     <li role="separator" class="divider"></li>
-                                                    <li><Link to="#">Thoát</Link></li>
+                                                    <li><Link onClick={(e) => handleLogout(e)} to="#">Thoát</Link></li>
                                                 </ul>
                                             </li>
                                         </>

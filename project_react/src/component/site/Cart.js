@@ -26,6 +26,7 @@ export default function Cart() {
     // tiếp tục mua sắm
     const handleContinueShopping = (e) => {
         e.preventDefault();
+        handleClosePopup();
         navigate("/san-pham.html");
     }
 

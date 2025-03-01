@@ -42,6 +42,17 @@ const CartReducer = (state = initialState, action) => {
                 return newCart;
             }
 
+        case "EMPTY_CART":
+            {
+                const newCart = {
+                    cartItems: []
+                };
+
+                localStorage.removeItem("cart");
+                return newCart;
+            }
+
+
         default:
             return state;
     }

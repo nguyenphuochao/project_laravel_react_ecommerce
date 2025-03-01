@@ -11,6 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+    // đăng nhập
     public function login(Request $request)
     {
         try {
@@ -56,6 +57,24 @@ class AuthController extends Controller
         }
     }
 
+    // đăng xuất
+    public function logout()
+    {
+        try {
+            request()->user()->currentAccessToken()->delete();
+
+            return response()->json([
+                'message' => 'Logout success'
+            ]);
+        } catch (\Throwable $th) {
+
+            return response()->json([
+                'error' => $th->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // lấy thông tin customer đã login
     public function getCustomer(Request $request)
     {
         return $request->user();

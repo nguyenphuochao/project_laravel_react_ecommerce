@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Order extends Model
 {
     use HasFactory;
+
     protected $table = "order";
+    public $timestamps = false;
 
     function customer()
     {

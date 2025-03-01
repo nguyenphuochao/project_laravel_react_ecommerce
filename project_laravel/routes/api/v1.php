@@ -68,11 +68,13 @@ Route::get('site/products/{id}', [SiteProductController::class, 'getProduct']); 
 Route::get('site/categories', [SiteCategoryController::class, 'getCategories']); // danh sách categories
 
 Route::post('site/login', [SiteAuthController::class, 'Login']); // đăng nhập
+Route::post('site/logout', [SiteAuthController::class, 'Logout'])->middleware('auth:customer'); // đăng xuất
 Route::get('site/customer', [SiteAuthController::class, 'getCustomer'])->middleware('auth:customer'); // thông tin customer
 
 Route::get('site/provinces', [AddressController::class, 'getProvinces']); // danh sách tỉnh/thành phố
-Route::get('site/districts/{province_id}', [AddressController::class, 'getDistrics']); // danh sách quận/huyện
-Route::get('site/wards/{district_id}', [AddressController::class, 'getWards']); // danh sách phường/xã
-Route::get('site/shipping_fee/{province_id}', [AddressController::class, 'getShippingFee']); // phí giao hàng
+Route::get('site/districts', [AddressController::class, 'getDistrics']); // danh sách quận/huyện
+Route::get('site/wards', [AddressController::class, 'getWards']); // danh sách phường/xã
+Route::get('site/shipping_fee', [AddressController::class, 'getShippingFee']); // phí giao hàng
 
 Route::post('site/order', [SiteOrderController::class, 'order']); // đặt hàng
+Route::get('site/transport', [SiteOrderController::class, 'getTransport']); // phí giao hàng theo tỉnh/thành phố

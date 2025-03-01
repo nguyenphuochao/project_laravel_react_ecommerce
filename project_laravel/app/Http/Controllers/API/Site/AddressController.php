@@ -17,23 +17,34 @@ class AddressController extends Controller
     }
 
     // danh sách quận/huyện
-    public function getDistrics($province_id)
+    public function getDistrics()
     {
-        $districts = DB::table("district")->where("province_id", $province_id)->get();
-        return $this->convertToAssociateArray($districts);
+        $province_id = request()->input('province_id');
+        if ($province_id) {
+            $districts = DB::table("district")->where("province_id", $province_id)->get();
+            return $this->convertToAssociateArray($districts);
+        }
+
+        return [];
     }
 
     // danh sách phường/xã
-    public function getWards($district_id)
+    public function getWards()
     {
-        $wards = DB::table("ward")->where("district_id", $district_id)->get();
-        return $this->convertToAssociateArray($wards);
+        $district_id = request()->input('district_id');
+        if ($district_id) {
+            $wards = DB::table("ward")->where("district_id", $district_id)->get();
+            return $this->convertToAssociateArray($wards);
+        }
+
+        return [];
     }
 
     // phí vận chuyển
-    public function getShippingFee($province_id)
+    public function getShippingFee()
     {
         try {
+            $province_id = request()->input('province_id');
             $transport = DB::table("transport")->where("province_id", $province_id)->first();
             echo $transport->price;
         } catch (\Throwable $th) {
