@@ -3,6 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom'
 import SearchForm from './SearchForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
+import { axiosAuthInstance } from '../../helper/util';
 
 export default function Header() {
     const navigate = useNavigate();
@@ -47,6 +48,7 @@ export default function Header() {
     // đăng xuất
     const handleLogout = (e) => {
         e.preventDefault();
+        axiosAuthInstance().post(`/site/logout`); // API logout
         const action = { type: "LOGOUT" };
         dispatch(action);
         navigate('/');

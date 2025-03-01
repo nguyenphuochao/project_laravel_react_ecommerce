@@ -28,6 +28,9 @@ import DeliveryPolicy from '../page/site/DeliveryPolicy';
 import Contact from '../page/site/Contact';
 import ProductDetail from '../page/site/ProductDetail';
 import Checkout from '../page/site/Checkout';
+import MyOrder from '../page/site/MyOrder';
+
+import LoginRouterSide from './LoginRouterSide';
 
 
 export default function Router() {
@@ -80,6 +83,8 @@ export default function Router() {
           <Route path="/lien-he.html" element={<Contact />} />
           {/* Checkout */}
           <Route path="/dat-hang.html" element={<Checkout />} />
+          {/* MyOrder */}
+          <Route path="/don-hang-cua-toi.html" element={<LoginRouterSide><MyOrder /></LoginRouterSide>} />
 
         </Route>
 

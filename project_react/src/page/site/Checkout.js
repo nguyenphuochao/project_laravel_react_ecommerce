@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { axiosNonAuthInstance, formatMoney } from '../../helper/util';
 import { toast } from 'react-toastify';
@@ -8,6 +8,7 @@ import * as Yup from 'yup';
 import { Helmet } from 'react-helmet';
 
 export default function Checkout() {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const [provinces, setProvinces] = useState([]);
@@ -123,6 +124,8 @@ export default function Checkout() {
 
                 const action = { type: "EMPTY_CART" };
                 dispatch(action);
+
+                navigate('/don-hang-cua-toi.html');
             } catch (error) {
                 toast.error(error.message);
             }

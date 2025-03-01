@@ -55,7 +55,7 @@ export default function LoginForm() {
 
                 dispatch(action);
             } catch (error) {
-                toast.error(error?.response?.data || error.message);
+                toast.error(error?.response?.data?.message || error.message);
             }
         }
     });

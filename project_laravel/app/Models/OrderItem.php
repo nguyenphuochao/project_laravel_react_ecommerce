@@ -11,4 +11,14 @@ class OrderItem extends Model
 
     protected $table = "order_item";
     public $timestamps = false;
+
+    function order()
+    {
+        return $this->belongsTo(Order::class, "order_id");
+    }
+
+    function product()
+    {
+        return $this->belongsTo(ViewProduct::class, "product_id");
+    }
 }

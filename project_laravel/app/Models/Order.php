@@ -26,4 +26,9 @@ class Order extends Model
     function staff(){
         return $this->belongsTo(Staff::class);
     }
+
+    function ward()
+    {
+        return $this->belongsTo(Ward::class, "shipping_ward_id");
+    }
 }
