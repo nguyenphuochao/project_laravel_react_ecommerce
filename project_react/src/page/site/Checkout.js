@@ -62,10 +62,10 @@ export default function Checkout() {
     // lấy phí giao hàng theo tỉnh/thành phố
     const getTransport = async (province_id) => {
         try {
-            const response = await axiosNonAuthInstance().get(`/site/transport?province_id=${province_id}`);
+            const response = await axiosNonAuthInstance().get(`/site/transport/${province_id}`);
             setTransport(response.data);
         } catch (error) {
-            toast.error(error.message);
+            console.log(error.message);
         }
     }
 
@@ -82,8 +82,8 @@ export default function Checkout() {
         // khởi tạo giá trị ban đầu
         initialValues: {
             // Dựa vào name của thẻ input
-            fullname: loggedUser?.name || '',
-            mobile: loggedUser?.mobile || '',
+            fullname: loggedUser?.shipping_name || '',
+            mobile: loggedUser?.shipping_mobile || '',
             province_id: loggedUser?.province_id || '',
             district: loggedUser?.district_id || '',
             ward: loggedUser?.ward_id || '',
@@ -111,7 +111,7 @@ export default function Checkout() {
         // Khi dữ liệu hợp lệ sẽ chạy code onSubmit
         onSubmit: async values => {
             try {
-                
+
                 const data = {
                     loggedUser: loggedUser,
                     deliveryInfo: values,
@@ -253,12 +253,12 @@ export default function Checkout() {
                                     {/* Provinces */}
                                     <div className="form-group col-sm-4">
                                         <select name="province_id" className="form-control province"
-                                            onChange={handleChangeProvince} value={formik.values.province} onBlur={formik.handleBlur}>
+                                            onChange={handleChangeProvince} value={formik.values.province_id} onBlur={formik.handleBlur}>
                                             {
                                                 !isLoaded ? <option>Loading...</option>
                                                     :
                                                     <>
-                                                        <option value="0">Tỉnh / thành phố</option>
+                                                        <option value>Tỉnh / thành phố</option>
                                                         {
                                                             provinces.map((province, index) =>
                                                                 <option value={province.id}>{province.name}</option>
@@ -269,6 +269,7 @@ export default function Checkout() {
 
                                         </select>
                                     </div>
+
                                     <div className="form-group col-sm-4">
                                         <select name="district" className="form-control district"
                                             onChange={handleChangeDistrict} value={formik.values.district} onBlur={formik.handleBlur} >

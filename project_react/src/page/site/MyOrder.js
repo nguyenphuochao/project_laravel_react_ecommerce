@@ -15,7 +15,7 @@ export default function MyOrder() {
 
     const getOrders = async () => {
         try {
-            const response = await axiosAuthInstance().get(`/site/order_history?customer_id=${loggedUser.id}`);
+            const response = await axiosAuthInstance().get(`/site/order_history`);
             setOrders(response.data);
             setIsLoaded(true);
         } catch (error) {
@@ -64,7 +64,7 @@ export default function MyOrder() {
                                             orders.map((order, index) =>
                                                 <div className="row">
                                                     <div className="col-md-12">
-                                                        <h5>Đơn hàng <Link to="chi-tiet-don-hang.html">#{order.order_id}</Link></h5>
+                                                        <h5>Đơn hàng <Link to={`/chi-tiet-don-hang/${order.order_id}.html`}>#{order.order_id}</Link></h5>
                                                         <span className="date">
                                                             Ngày đặt hàng {order.created_date}
                                                         </span>

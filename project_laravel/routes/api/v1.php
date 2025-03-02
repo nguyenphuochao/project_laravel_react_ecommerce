@@ -77,6 +77,6 @@ Route::get('site/wards', [AddressController::class, 'getWards']); // danh sách 
 Route::get('site/shipping_fee', [AddressController::class, 'getShippingFee']); // phí giao hàng
 
 Route::post('site/order', [SiteOrderController::class, 'order']); // đặt hàng
-Route::get('site/transport', [SiteOrderController::class, 'getTransport']); // phí giao hàng theo tỉnh/thành phố
+Route::get('site/transport/{province_id}', [SiteOrderController::class, 'getTransport']); // phí giao hàng theo tỉnh/thành phố
 Route::get('site/order_history', [SiteOrderController::class, 'getOrderHistory'])->middleware('auth:customer');; // lịch sử mua hàng
-Route::get('site/order_history_detail/{id}', [SiteOrderController::class, 'getOrderHistoryDetail'])->middleware('auth:customer'); // chi tiêt lịch sử mua hàng
+Route::get('site/order_history/{id}', [SiteOrderController::class, 'getOrderHistoryDetail'])->middleware('auth:customer'); // chi tiêt lịch sử mua hàng

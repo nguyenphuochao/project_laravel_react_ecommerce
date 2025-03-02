@@ -31,6 +31,8 @@ import Checkout from '../page/site/Checkout';
 import MyOrder from '../page/site/MyOrder';
 
 import LoginRouterSide from './LoginRouterSide';
+import OrderDetail from '../page/site/OrderDetail';
+import Account from '../page/site/Account';
 
 
 export default function Router() {
@@ -85,6 +87,10 @@ export default function Router() {
           <Route path="/dat-hang.html" element={<Checkout />} />
           {/* MyOrder */}
           <Route path="/don-hang-cua-toi.html" element={<LoginRouterSide><MyOrder /></LoginRouterSide>} />
+          {/* OrderDetail */}
+          <Route path="/chi-tiet-don-hang/:slug.html" element={<LoginRouterSide><OrderDetail /></LoginRouterSide>} />
+          {/* Account */}
+          <Route path="/thong-tin-tai-khoan.html" element={<LoginRouterSide><Account /></LoginRouterSide>} />
 
         </Route>
 

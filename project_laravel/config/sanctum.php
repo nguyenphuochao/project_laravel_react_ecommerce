@@ -46,7 +46,7 @@ return [
     |
     */
 
-    'expiration' => 60, // set thời gian token là 60p
+    'expiration' => 1440, // set thời gian token là 60p
 
     /*
     |--------------------------------------------------------------------------

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderItem;
+use ErrorException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -25,12 +26,12 @@ class OrderController extends Controller
             $order->order_status_id = 1;
             $order->staff_id = null;
             $order->customer_id = $request->loggedUser["id"] ?? 1; // không đăng nhập thì lưu 1 => khách vãng lai
-            $order->shipping_fullname = $request->loggedUser["shipping_name"] ?? $request->deliveryInfo["fullname"];
-            $order->shipping_mobile = $request->loggedUser["shipping_mobile"] ?? $request->deliveryInfo["mobile"];
+            $order->shipping_fullname = $request->deliveryInfo["fullname"];
+            $order->shipping_mobile = $request->deliveryInfo["mobile"];
             $order->payment_method = $request->deliveryInfo["payment_method"];
             $order->shipping_ward_id = $request->deliveryInfo["ward"];
             $order->shipping_housenumber_street = $request->deliveryInfo["address"];
-            $order->shipping_fee = $this->getTransport($request->loggedUser["province_id"] ?? $request->deliveryInfo["province_id"]);
+            $order->shipping_fee = $this->getTransport($request->deliveryInfo["province_id"]);
             $order->delivered_date = date("Y-m-d", strtotime("+3 days"));
             $order->save();
 
@@ -64,9 +65,8 @@ class OrderController extends Controller
     }
 
     // Phí giao hàng theo tỉnh/thành phố
-    public function getTransport()
+    public function getTransport($province_id)
     {
-        $province_id = request()->input('province_id');
         $province = DB::table("province")->where("id", $province_id)->first();
 
         if ($province) {
@@ -80,8 +80,10 @@ class OrderController extends Controller
     // Lịch sử mua hàng
     public function getOrderHistory()
     {
-        $customer_id = request()->input("customer_id");
-        $orders = Order::where("customer_id", $customer_id)->orderBy('id', 'desc')->get();
+        $customer = request()->user(); // lấy thông tin customer đã dc login
+        $customerID = $customer->id;
+
+        $orders = Order::where("customer_id", $customerID)->orderBy('id', 'desc')->get();
 
         $data = [];
 
@@ -99,34 +101,56 @@ class OrderController extends Controller
     // Chi tiết lịch sử mua hàng
     public function getOrderHistoryDetail($id)
     {
-        $order = Order::where("id", $id)->first();
+        try {
 
-        $data["order_id"] = $order->id;
+            $customer = request()->user(); // lấy thông tin customer đã dc login
+            $customerID = $customer->id;
 
-        $data["customer"] = [
-            "shipping_fullname" => $order->shipping_fullname,
-            "shipping_mobile" => $order->shipping_mobile,
-            "province" => $order->ward->district->province->name,
-            "district" => $order->ward->district->name,
-            "ward" => $order->ward->name,
-            "shipping_housenumber_street" => $order->shipping_housenumber_street,
-            "payment_method" => $order->payment_method == 0 ? "COD" : "Bank"
-        ];
+            $order = Order::where([
+                "id" => $id,
+                "customer_id" => $customerID
+            ])->first();
 
-        $data["order_item"] = [
-            "items" => $this->getOrderItems($order->id),
-            "sub_total" => $this->subTotal($order->id),
-            "shipping_fee" => $order->shipping_fee,
-            "total" => $order->shipping_fee + $this->subTotal($order->id)
-        ];
+            $data["order_id"] = $order->id;
 
-        return $data;
+            $data["customer"] = [
+                "shipping_fullname" => $order->shipping_fullname,
+                "shipping_mobile" => $order->shipping_mobile,
+                "province" => $order->ward->district->province->name,
+                "district" => $order->ward->district->name,
+                "ward" => $order->ward->name,
+                "shipping_housenumber_street" => $order->shipping_housenumber_street,
+                "payment_method" => $order->payment_method == 0 ? "COD" : "Bank"
+            ];
+
+            $data["order_item"] = [
+                "items" => $this->getOrderItems($order->id),
+                "sub_total" => $this->subTotal($order->id),
+                "shipping_fee" => $order->shipping_fee,
+                "total" => $order->shipping_fee + $this->subTotal($order->id)
+            ];
+
+            return $data;
+
+        } catch (\Throwable $th) {
+
+            if ($th instanceof ErrorException) {
+                return response()->json([
+                    "message" => "Dữ liệu không hợp lệ",
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+            return response()->json([
+                "message" => $th->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     // Tính tổng tiền phụ
     private function subTotal($order_id)
     {
         $total = 0;
+
         foreach ($this->getOrderItems($order_id) as $item) {
             $total += $item["total_price"];
         }
@@ -134,7 +158,7 @@ class OrderController extends Controller
         return $total;
     }
 
-    // Danh sách chi tiết đơn hàng
+    // Danh sách items đơn hàng
     private function getOrderItems($order_id)
     {
         $baseUrl = request()->getSchemeAndHttpHost();
