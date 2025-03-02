@@ -13,14 +13,19 @@ class OrderController extends Controller
     // Lấy danh sách đơn hàng
     public function getOrders(Request $request)
     {
-
-
-        // $created_date = $this->getDate();
+        $revenue_total = 0;
+        $order_canceled = 0;
 
         $orders = Order::orderBy('id', "DESC")->get();
 
         $data = [];
         foreach ($orders as $order) {
+            if ($order->order_status_id != 6) {
+                $revenue_total += $this->getSubTotal($order->id);
+            } else {
+                $order_canceled++;
+            }
+
             $data[] = array(
                 "order_id" => $order->id,
                 "customer_name" => $order->customer->name,
@@ -41,27 +46,10 @@ class OrderController extends Controller
             );
         }
 
-        return $data;
-    }
-
-    // Thống kê số lượng : đơn hàng, doanh thu, đơn hàng đã hủy
-    public function getStatistical()
-    {
-        $revenue = 0;
-        $order_canceled = 0;
-        $orders = Order::all();
-
-        foreach ($orders as $order) {
-            if ($order->order_status_id != 6) {
-                $revenue += $this->getSubTotal($order->id);
-            } else {
-                $order_canceled++;
-            }
-        }
-
         return response()->json([
-            "order_total" => count($orders),
-            "revenue" => $revenue,
+            "items" => $data,
+            "order_total" => count($data),
+            "revenue_total" => $revenue_total,
             "order_canceled" => $order_canceled
         ]);
     }
@@ -76,27 +64,5 @@ class OrderController extends Controller
         }
 
         return $subTotal;
-    }
-
-    // Lấy ngày của đơn hàng
-    private function getDate()
-    {
-        $created_date = date("Y-m-d"); // mặc định là ngày hôm nay
-
-        if (request()->input("today")) $created_date = request()->input("today");
-
-        if (request()->input("yesterday")) $created_date = request()->input("yesterday");
-
-        if (request()->input("this_week")) $created_date = request()->input("this_week");
-
-        if (request()->input("this_month")) $created_date = request()->input("this_month");
-
-        if (request()->input("3_month")) $created_date = request()->input("3_months");
-
-        if (request()->input("this_year")) $created_date = request()->input("this_year");
-
-        if(request()->input("from_day")) $created_date = request()->input("from_day");
-
-        return $created_date;
     }
 }

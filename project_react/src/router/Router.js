@@ -1,10 +1,13 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import Layout from '../component/admin/Layout'
+
+import LoginRouterAdmin from './LoginRouterAdmin';
+import LoginRouterSide from './LoginRouterSide';
 import ProtectedRouter from './ProtectedRouter';
-import LoginRouter from './LoginRouter';
 
 // admin
+import Layout from '../component/admin/Layout'
+
 import Login from '../page/admin/auth/Login';
 
 import Dashboard from '../page/admin/dashboard/Dashboard';
@@ -20,6 +23,7 @@ import ProductEdit from '../page/admin/product/ProductEdit';
 
 // site
 import { Layout as LayoutSite } from '../component/site/Layout';
+
 import HomePage from '../page/site/HomePage'
 import Product from '../page/site/Product';
 import ReturnPolicy from '../page/site/ReturnPolicy';
@@ -29,8 +33,6 @@ import Contact from '../page/site/Contact';
 import ProductDetail from '../page/site/ProductDetail';
 import Checkout from '../page/site/Checkout';
 import MyOrder from '../page/site/MyOrder';
-
-import LoginRouterSide from './LoginRouterSide';
 import OrderDetail from '../page/site/OrderDetail';
 import Account from '../page/site/Account';
 
@@ -43,22 +45,22 @@ export default function Router() {
         {/* ADMIN */}
 
         {/* Login */}
-        <Route path="/login" element={<LoginRouter><Login /></LoginRouter>} />
+        <Route path="/login" element={<ProtectedRouter><Login /></ProtectedRouter>} />
 
         <Route path="/admin" element={<Layout />} >
 
           {/* Dashboard */}
-          <Route path="/admin" element={<ProtectedRouter><Dashboard /></ProtectedRouter>} />
+          <Route path="/admin" element={<LoginRouterAdmin><Dashboard /></LoginRouterAdmin>} />
 
           {/* Category */}
-          <Route path="/admin/category/list" element={<ProtectedRouter><CategoryList /></ProtectedRouter>} />
-          <Route path="/admin/category/add" element={<ProtectedRouter><CategoryAdd /></ProtectedRouter>} />
-          <Route path="/admin/category/edit/:slug" element={<ProtectedRouter><CategoryEdit /></ProtectedRouter>} />
+          <Route path="/admin/category/list" element={<LoginRouterAdmin><CategoryList /></LoginRouterAdmin>} />
+          <Route path="/admin/category/add" element={<LoginRouterAdmin><CategoryAdd /></LoginRouterAdmin>} />
+          <Route path="/admin/category/edit/:slug" element={<LoginRouterAdmin><CategoryEdit /></LoginRouterAdmin>} />
 
           {/* Product */}
-          <Route path="/admin/product/list" element={<ProtectedRouter><ProductList /></ProtectedRouter>} />
-          <Route path="/admin/product/add" element={<ProtectedRouter><ProductAdd /></ProtectedRouter>} />
-          <Route path="/admin/product/edit/:slug" element={<ProtectedRouter><ProductEdit /></ProtectedRouter>} />
+          <Route path="/admin/product/list" element={<LoginRouterAdmin><ProductList /></LoginRouterAdmin>} />
+          <Route path="/admin/product/add" element={<LoginRouterAdmin><ProductAdd /></LoginRouterAdmin>} />
+          <Route path="/admin/product/edit/:slug" element={<LoginRouterAdmin><ProductEdit /></LoginRouterAdmin>} />
 
         </Route>
 

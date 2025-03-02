@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API\Site;
 
 use App\Http\Controllers\Controller;
-use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderItem;
 use ErrorException;

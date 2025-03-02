@@ -2,19 +2,26 @@ import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify';
-import { axiosAuthInstance } from '../../../helper/util';
+import { axiosAuthInstance, formatMoney } from '../../../helper/util';
 import Loading from '../../../component/admin/Loading';
-import axios from 'axios';
+
 
 export default function Dashboard() {
+
   const [orders, setOrders] = useState([]);
-  const [statistical, setStatistical] = useState(null);
+  const [orderTotal, setOrderTotal] = useState(0);
+  const [revenueTotal, setRevenueTotal] = useState(0);
+  const [orderCanceled, setOrderCanceled] = useState(0);
+
   const [isLoaded, setIsLoaded] = useState(false);
 
   const getOrders = async () => {
     try {
       const response = await axiosAuthInstance().get('/orders');
-      setOrders(response.data);
+      setOrders(response.data.items);
+      setOrderTotal(response.data.order_total);
+      setRevenueTotal(response.data.revenue_total);
+      setOrderCanceled(response.data.order_canceled);
       setIsLoaded(true)
     } catch (error) {
       toast.error(error.message);
@@ -22,14 +29,8 @@ export default function Dashboard() {
     }
   }
 
-  const getStatistical = async () => {
-      const response = await axiosAuthInstance().get('/orders/getStatistical');
-      setStatistical(response.data);
-  }
-
   useEffect(() => {
     getOrders();
-    getStatistical();
   }, [])
 
   return (
@@ -73,7 +74,7 @@ export default function Dashboard() {
                   <div className="card-body-icon">
                     <i className="fas fa-fw fa-list" />
                   </div>
-                  <div className="mr-5">{statistical?.order_total} Đơn hàng</div>
+                  <div className="mr-5">{orderTotal} Đơn hàng</div>
                 </div>
                 <Link className="card-footer text-white clearfix small z-1" to="#">
                   <span className="float-left">Chi tiết</span>
@@ -89,7 +90,7 @@ export default function Dashboard() {
                   <div className="card-body-icon">
                     <i className="fas fa-fw fa-shopping-cart" />
                   </div>
-                  <div className="mr-5">Doanh thu {statistical?.revenue} đ</div>
+                  <div className="mr-5">Doanh thu {formatMoney(revenueTotal)} đ</div>
                 </div>
                 <Link className="card-footer text-white clearfix small z-1" to="#">
                   <span className="float-left">Chi tiết</span>
@@ -105,7 +106,7 @@ export default function Dashboard() {
                   <div className="card-body-icon">
                     <i className="fas fa-fw fa-life-ring" />
                   </div>
-                  <div className="mr-5">{statistical?.order_canceled} đơn hàng bị hủy</div>
+                  <div className="mr-5">{orderCanceled} đơn hàng bị hủy</div>
                 </div>
                 <Link className="card-footer text-white clearfix small z-1" to="#">
                   <span className="float-left">Chi tiết</span>
