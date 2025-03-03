@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import AsideOrder from '../../component/site/AsideOrder';
 
 export default function Account() {
     return (
@@ -15,26 +16,7 @@ export default function Account() {
                         </div>
                         <div className="clearfix" />
 
-                        <aside className="col-md-3">
-                            <div className="inner-aside">
-                                <div className="category">
-                                    <ul>
-                                        <li className="active">
-                                            <a href="thong-tin-tai-khoan.html" title="Thông tin tài khoản" target="_self">Thông tin tài khoản
-                                            </a>
-                                        </li>
-                                        <li className>
-                                            <a href="dia-chi-giao-hang-mac-dinh.html" title="Địa chỉ giao hàng mặc định" target="_self">Địa chỉ giao hàng mặc định
-                                            </a>
-                                        </li>
-                                        <li className>
-                                            <a href="don-hang-cua-toi.html" target="_self">Đơn hàng của tôi
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </aside>
+                        <AsideOrder />
                         
                         <div className="col-md-9 account">
                             <div className="row">

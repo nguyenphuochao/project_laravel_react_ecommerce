@@ -70,6 +70,7 @@ Route::get('site/categories', [SiteCategoryController::class, 'getCategories']);
 Route::post('site/login', [SiteAuthController::class, 'Login']); // đăng nhập
 Route::post('site/logout', [SiteAuthController::class, 'Logout'])->middleware('auth:customer'); // đăng xuất
 Route::get('site/customer', [SiteAuthController::class, 'getCustomer'])->middleware('auth:customer'); // thông tin customer
+Route::PUT('site/customer/update', [SiteAuthController::class, 'updateCustomer'])->middleware('auth:customer'); // cập nhật customer
 
 Route::get('site/provinces', [AddressController::class, 'getProvinces']); // danh sách tỉnh/thành phố
 Route::get('site/districts', [AddressController::class, 'getDistrics']); // danh sách quận/huyện

@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import AsideOrder from '../../component/site/AsideOrder'
 import { axiosAuthInstance } from '../../helper/util';
-import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Loading from '../../component/site/Loading';
 import { Helmet } from 'react-helmet';
 
 export default function MyOrder() {
-    const loggedUser = useSelector(state => state.AuthReducer.loggedUser);
+    const navigate = useNavigate();
 
     const [orders, setOrders] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -21,6 +20,10 @@ export default function MyOrder() {
         } catch (error) {
             toast.error(error.message);
             setIsLoaded(true);
+
+            if(error.response.status === 401) {
+                navigate("/");
+            }
         }
     }
 

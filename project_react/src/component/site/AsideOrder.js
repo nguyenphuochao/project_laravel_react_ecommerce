@@ -16,7 +16,7 @@ export default function AsideOrder() {
                                 <NavLink to="/dia-chi-giao-hang-mac-dinh.html" title="Địa chỉ giao hàng mặc định" target="_self">Địa chỉ giao hàng mặc định </NavLink>
                             </li>
 
-                            <li className="active">
+                            <li>
                                 <NavLink to="/don-hang-cua-toi.html" target="_self">Đơn hàng của tôi </NavLink>
                             </li>
                         </ul>

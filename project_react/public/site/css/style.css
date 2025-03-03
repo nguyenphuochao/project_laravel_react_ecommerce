@@ -843,5 +843,10 @@ main .product-detail .product-related .owl-next {
     overflow-y: auto;
 }
 
+/* Sidebar order */
+aside .inner-aside .category a.active {
+    color: red;
+}
+
 
 /*END*/
