@@ -1,7 +1,58 @@
 import React from 'react';
 import AsideOrder from '../../component/site/AsideOrder';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
+import { axiosAuthInstance } from '../../helper/util';
 
 export default function Account() {
+
+    const loggedUser = useSelector(state => state.AuthReducer.loggedUser);
+
+    const formik = useFormik({
+        // khởi tạo giá trị ban đầu
+        initialValues: {
+            // Dựa vào name của thẻ input
+            fullname: loggedUser?.name || '',
+            mobile: loggedUser?.mobile || '',
+            current_password: '',
+            new_password: '',
+            confirm_password: ''
+        },
+
+        // Kiểm tra dữ liệu
+        validationSchema: Yup.object({
+            fullname: Yup.string()
+                .required('Vui lòng nhập họ tên'),
+            mobile: Yup.string()
+                .required('Vui lòng nhập số điện thoại'),
+            current_password: Yup.string()
+                .required('Vui lòng nhập mật khẩu hiện tại'),
+            new_password: Yup.string()
+                .required('Vui lòng nhập mật khẩu mới'),
+            confirm_password: Yup.string()
+                .required('Vui lòng nhập lại mật khẩu mới'),
+        }),
+
+        // Khi dữ liệu hợp lệ sẽ chạy code onSubmit
+        onSubmit: async (values, { setErrors }) => {
+            try {
+
+                const response = await axiosAuthInstance().put('/site/customer/update', values);
+                const name = response.data.name;
+                toast.success(`Cập nhật thành công ${name}`);
+
+                // thực hiện dispatch vào store
+
+
+            } catch (error) {
+                toast.error(error.message);
+                setErrors(error.response.data.errors); // gán error vào formik
+            }
+        }
+    });
+
     return (
         <>
             <main id="maincontent" className="page-main">
@@ -17,7 +68,7 @@ export default function Account() {
                         <div className="clearfix" />
 
                         <AsideOrder />
-                        
+
                         <div className="col-md-9 account">
                             <div className="row">
                                 <div className="col-xs-6">
@@ -25,22 +76,57 @@ export default function Account() {
                                 </div>
                                 <div className="clearfix" />
                                 <div className="col-md-6">
-                                    <form className="info-account" action="#" method="POST">
+                                    <form className="info-account" onSubmit={formik.handleSubmit}>
+
                                         <div className="form-group">
-                                            <input type="text" defaultValue="Huu Loc" className="form-control" name="fullname" placeholder="Họ và tên" required oninvalid="this.setCustomValidity('Vui lòng nhập tên của bạn')" oninput="this.setCustomValidity('')" />
+                                            <input type="text" className="form-control" name="fullname" placeholder="Họ và tên"
+                                                onChange={formik.handleChange} value={formik.values.fullname} onBlur={formik.handleBlur} />
+                                            {
+                                                formik.touched.fullname && formik.errors.fullname ?
+                                                    <div className='text-danger'>{formik.errors.fullname}</div> : null
+                                            }
                                         </div>
+
                                         <div className="form-group">
-                                            <input type="tel" defaultValue={"0932538468"} className="form-control" name="mobile" placeholder="Số điện thoại" required pattern="[0][0-9]{9,}" oninvalid="this.setCustomValidity('Vui lòng nhập số điện thoại bắt đầu bằng số 0 và ít nhất 9 con số theo sau')" oninput="this.setCustomValidity('')" />
+                                            <input type="tel" className="form-control" name="mobile" placeholder="Số điện thoại"
+                                                onChange={formik.handleChange} value={formik.values.mobile} onBlur={formik.handleBlur} />
+                                            {
+                                                formik.touched.mobile && formik.errors.mobile ?
+                                                    <div className='text-danger'>{formik.errors.mobile}</div> : null
+                                            }
                                         </div>
+
                                         <div className="form-group">
-                                            <input type="password" className="form-control" name="password" placeholder="Mật khẩu mới" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$" oninvalid="this.setCustomValidity('Vui lòng nhập ít nhất 8 ký tự: số, chữ hoa, chữ thường')" oninput="this.setCustomValidity('')" />
+                                            <input type="password" className="form-control" name="current_password" placeholder="Mật khẩu hiện tại"
+                                                onChange={formik.handleChange} value={formik.values.current_password} onBlur={formik.handleBlur} />
+                                            {
+                                                formik.touched.current_password && formik.errors.current_password ?
+                                                    <div className='text-danger'>{formik.errors.current_password}</div> : null
+                                            }
                                         </div>
+
                                         <div className="form-group">
-                                            <input type="password" className="form-control" name="re-password" placeholder="Nhập lại mật khẩu mới" autoComplete="off" autoSave="off" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$" oninvalid="this.setCustomValidity('Vui lòng nhập ít nhất 8 ký tự: số, chữ hoa, chữ thường')" oninput="this.setCustomValidity('')" />
+                                            <input type="password" className="form-control" name="new_password" placeholder="Nhập mật khẩu mới"
+                                                onChange={formik.handleChange} value={formik.values.new_password} onBlur={formik.handleBlur} />
+                                            {
+                                                formik.touched.new_password && formik.errors.new_password ?
+                                                    <div className='text-danger'>{formik.errors.new_password}</div> : null
+                                            }
                                         </div>
+
+                                        <div className="form-group">
+                                            <input type="password" className="form-control" name="confirm_password" placeholder="Nhập lại mật khẩu mới"
+                                                onChange={formik.handleChange} value={formik.values.confirm_password} onBlur={formik.handleBlur} />
+                                            {
+                                                formik.touched.confirm_password && formik.errors.confirm_password ?
+                                                    <div className='text-danger'>{formik.errors.confirm_password}</div> : null
+                                            }
+                                        </div>
+
                                         <div className="form-group">
                                             <button type="submit" className="btn btn-primary pull-right">Cập nhật</button>
                                         </div>
+
                                     </form>
                                 </div>
                             </div>

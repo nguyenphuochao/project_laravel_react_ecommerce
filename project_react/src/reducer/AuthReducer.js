@@ -37,6 +37,17 @@ const AuthReducer = (state = initialState, action) => {
                 localStorage.setItem('authInfo', JSON.stringify(new_state));
                 return new_state;
             }
+            
+        case 'UPDATE_LOGGED_USER' :
+            {
+                const new_state = {
+                    ...state,
+                    loggedUser : action.payload.loggedUser
+                }
+
+                localStorage.setItem('authInfo', JSON.stringify(new_state));
+                return new_state;
+            }
 
 
         default:

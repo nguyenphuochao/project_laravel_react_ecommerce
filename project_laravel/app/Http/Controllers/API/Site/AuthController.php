@@ -89,14 +89,14 @@ class AuthController extends Controller
         // validate
         $request->validate(
             [
-                "name" => "required",
+                "fullname" => "required",
                 "mobile" => "required",
                 "current_password" => "required",
                 "new_password" => "required",
                 "confirm_password" => "same:new_password"
             ],
             [
-                "name.required" => "Vui lòng nhập họ và tên",
+                "fullname.required" => "Vui lòng nhập họ và tên",
                 "mobile.required" => "Vui lòng nhập điện thoại",
                 "current_password.required" => "Vui lòng nhập password hiện tại",
                 "new_password.required" => "Vui lòng nhập password mới",
@@ -109,7 +109,7 @@ class AuthController extends Controller
         $current_password = $request->current_password;
         $db_password = $customer->password;
 
-        if(!Hash::check($current_password, $db_password)) {
+        if (!Hash::check($current_password, $db_password)) {
             return response()->json([
                 "message" => "Mật khẩu hiện tại không chính xác"
             ], 401);
