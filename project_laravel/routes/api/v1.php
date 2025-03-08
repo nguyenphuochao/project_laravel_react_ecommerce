@@ -5,6 +5,7 @@ use App\Http\Controllers\API\Admin\AuthController;
 use App\Http\Controllers\API\Admin\CategoryController;
 use App\Http\Controllers\API\Admin\OrderController;
 use App\Http\Controllers\API\Admin\ProductController;
+use App\Http\Controllers\API\Site\AccountController as SiteAccountController;
 use App\Http\Controllers\API\Site\AddressController;
 use App\Http\Controllers\API\Site\AuthController as SiteAuthController;
 use App\Http\Controllers\API\Site\CategoryController as SiteCategoryController;
@@ -70,7 +71,9 @@ Route::get('site/categories', [SiteCategoryController::class, 'getCategories']);
 Route::post('site/login', [SiteAuthController::class, 'Login']); // đăng nhập
 Route::post('site/logout', [SiteAuthController::class, 'Logout'])->middleware('auth:customer'); // đăng xuất
 Route::get('site/customer', [SiteAuthController::class, 'getCustomer'])->middleware('auth:customer'); // thông tin customer
-Route::PUT('site/customer/update', [SiteAuthController::class, 'updateCustomer'])->middleware('auth:customer'); // cập nhật customer
+
+Route::put('site/customer/update_account_info', [SiteAccountController::class, 'updateAccountInfo'])->middleware('auth:customer'); // cập nhật thông tin tài khoản
+Route::put('site/customer/update_shipping_address', [SiteAccountController::class, 'updateShippingAddress'])->middleware('auth:customer'); // cập nhật địa chỉ giao hàng mặc định
 
 Route::get('site/provinces', [AddressController::class, 'getProvinces']); // danh sách tỉnh/thành phố
 Route::get('site/districts', [AddressController::class, 'getDistrics']); // danh sách quận/huyện

@@ -80,50 +80,6 @@ class AuthController extends Controller
         return $request->user();
     }
 
-    // Cập nhật customer
-    public function updateCustomer(Request $request)
-    {
-        $customer = $request->user();
-        $customerID = $customer->id;
-
-        // validate
-        $request->validate(
-            [
-                "fullname" => "required",
-                "mobile" => "required",
-                "current_password" => "required",
-                "new_password" => "required",
-                "confirm_password" => "same:new_password"
-            ],
-            [
-                "fullname.required" => "Vui lòng nhập họ và tên",
-                "mobile.required" => "Vui lòng nhập điện thoại",
-                "current_password.required" => "Vui lòng nhập password hiện tại",
-                "new_password.required" => "Vui lòng nhập password mới",
-                "confirm_password.same" => "Xác nhận password chưa khớp"
-            ]
-        );
-
-        $customer = Customer::find($customerID);
-
-        $current_password = $request->current_password;
-        $db_password = $customer->password;
-
-        if (!Hash::check($current_password, $db_password)) {
-            return response()->json([
-                "message" => "Mật khẩu hiện tại không chính xác"
-            ], 401);
-        }
-
-        // update customer
-        $customer->name = $request->name;
-        $customer->mobile = $request->mobile;
-        $customer->password = Hash::make($request->new_password);
-        $customer->save();
-
-        return $customer;
-    }
-
     private function convertToAPICustomer($object)
     {
         $data = array(

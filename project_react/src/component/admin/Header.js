@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify'
 
 export default function Header() {
-    const loggedUser = useSelector(state => state.loggedUser);
+    const loggedUser = useSelector(state => state.AuthReducer.loggedUser);
 
     return (
         <>

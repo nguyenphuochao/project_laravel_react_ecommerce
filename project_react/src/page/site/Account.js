@@ -3,10 +3,11 @@ import AsideOrder from '../../component/site/AsideOrder';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { axiosAuthInstance } from '../../helper/util';
 
 export default function Account() {
+    const dispatch = useDispatch();
 
     const loggedUser = useSelector(state => state.AuthReducer.loggedUser);
 
@@ -27,24 +28,27 @@ export default function Account() {
                 .required('Vui lòng nhập họ tên'),
             mobile: Yup.string()
                 .required('Vui lòng nhập số điện thoại'),
-            current_password: Yup.string()
-                .required('Vui lòng nhập mật khẩu hiện tại'),
-            new_password: Yup.string()
-                .required('Vui lòng nhập mật khẩu mới'),
-            confirm_password: Yup.string()
-                .required('Vui lòng nhập lại mật khẩu mới'),
         }),
 
         // Khi dữ liệu hợp lệ sẽ chạy code onSubmit
         onSubmit: async (values, { setErrors }) => {
             try {
 
+                // console.log(values);
+
                 const response = await axiosAuthInstance().put('/site/customer/update', values);
                 const name = response.data.name;
                 toast.success(`Cập nhật thành công ${name}`);
 
                 // thực hiện dispatch vào store
+                const action = {
+                    type : "UPDATE_LOGGED_USER",
+                    payload : {
+                        loggedUser : response.data
+                    }
+                };
 
+                dispatch(action);
 
             } catch (error) {
                 toast.error(error.message);
