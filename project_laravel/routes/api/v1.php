@@ -37,7 +37,7 @@ Route::get('render-pass', function () {
 Route::post('login', [AuthController::class, 'login']);
 
 // Logout
-Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:staff');
 
 // Xác thực nhóm API token
 Route::middleware('auth:staff')->group(function () {
